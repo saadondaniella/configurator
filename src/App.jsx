@@ -1,7 +1,9 @@
+import ModelViewer from "./component/ModelViewer";
+
 function App() {
   return (
-    <main>
-      <h1>3D Configurator</h1>
+    <main style={{ width: "100vw", height: "100vh" }}>
+      <ModelViewer />
     </main>
   );
 }
