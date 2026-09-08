@@ -2,13 +2,13 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import ProductModel from "./ProductModel";
 
-function ModelViewer() {
+function ModelViewer({ color }) {
   return (
     <Canvas camera={{ position: [0, 0, 5] }}>
       <ambientLight intensity={1} />
       <directionalLight position={[2, 2, 5]} intensity={2} />
 
-      <ProductModel />
+      <ProductModel color={color} />
 
       <OrbitControls />
     </Canvas>
