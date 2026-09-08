@@ -1,5 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import ProductModel from "./ProductModel";
 
 function ModelViewer() {
   return (
@@ -7,10 +8,7 @@ function ModelViewer() {
       <ambientLight intensity={1} />
       <directionalLight position={[2, 2, 5]} intensity={2} />
 
-      <mesh>
-        <boxGeometry args={[2, 2, 2]} />
-        <meshStandardMaterial color="orange" />
-      </mesh>
+      <ProductModel />
 
       <OrbitControls />
     </Canvas>
