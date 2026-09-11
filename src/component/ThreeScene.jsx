@@ -101,7 +101,7 @@ function ThreeScene({ form }) {
 
     const loader = new GLTFLoader();
 
-    const modelPath = modelPaths[form];
+    const modelPath = modelPaths[form] || "/glb/Heart_Pill_Standalone.glb";
 
     loader.load(
       modelPath,

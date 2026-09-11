@@ -4,7 +4,7 @@ import ThreeScene from "./component/ThreeScene";
 import "./App.css";
 
 function App() {
-  const [form, setForm] = useState("capsule");
+  const [form, setForm] = useState(null);
 
   return (
     <main className="app">
