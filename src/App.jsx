@@ -1,23 +1,15 @@
 import { useState } from "react";
-import ModelViewer from "./components/ModelViewer";
+import StoryPanel from "./component/StoryPanel";
+import ThreeScene from "./component/ThreeScene";
 import "./App.css";
 
 function App() {
-  const [form, setForm] = useState(null);
+  const [form, setForm] = useState("capsule");
 
   return (
     <main className="app">
-      <div className="story-panel">
-        <h1>Story starts here</h1>
-
-        <button onClick={() => setForm("capsule")}>Capsule</button>
-        <button onClick={() => setForm("round")}>Round</button>
-        <button onClick={() => setForm("heart")}>Heart</button>
-      </div>
-
-      <div className="viewer-panel">
-        <ModelViewer form={form} />
-      </div>
+      <StoryPanel form={form} setForm={setForm} />
+      <ThreeScene form={form} />
     </main>
   );
 }
