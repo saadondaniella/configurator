@@ -6,6 +6,12 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 function ThreeScene({ form }) {
   const canvasRef = useRef(null);
 
+  const modelPaths = {
+    capsule: "/glb/Heart_Pill_Standalone.glb",
+    round: "/glb/Heart_Pill_Standalone.glb",
+    heart: "/glb/Heart_Pill_Standalone.glb",
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
 
@@ -20,7 +26,7 @@ function ThreeScene({ form }) {
       1000,
     );
 
-    camera.position.set(0, 5, 8);
+    camera.position.set(0, 3, 5);
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
@@ -50,7 +56,7 @@ function ThreeScene({ form }) {
     const loader = new GLTFLoader();
 
     loader.load(
-      "/glb/Capsule_Pill_2x3_Beige.glb",
+      "/glb/Heart_Pill_Standalone.glb",
 
       (gltf) => {
         const model = gltf.scene;
