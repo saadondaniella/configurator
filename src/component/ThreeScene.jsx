@@ -5,6 +5,8 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 function ThreeScene({ form }) {
   const canvasRef = useRef(null);
+  const sceneRef = useRef(null);
+  const modelRef = useRef(null);
 
   const modelPaths = {
     capsule: "/glb/Heart_Pill_Standalone.glb",
@@ -12,11 +14,13 @@ function ThreeScene({ form }) {
     heart: "/glb/Heart_Pill_Standalone.glb",
   };
 
+  // SET UP THREE.JS SCENE
   useEffect(() => {
     const canvas = canvasRef.current;
 
     // SCENE
     const scene = new THREE.Scene();
+    sceneRef.current = scene;
 
     // CAMERA
     const camera = new THREE.PerspectiveCamera(
@@ -52,32 +56,6 @@ function ThreeScene({ form }) {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
-    // LOAD DEFAULT MODEL
-    const loader = new GLTFLoader();
-
-    loader.load(
-      "/glb/Heart_Pill_Standalone.glb",
-
-      (gltf) => {
-        const model = gltf.scene;
-
-        const box = new THREE.Box3().setFromObject(model);
-        const center = box.getCenter(new THREE.Vector3());
-
-        model.position.x -= center.x;
-        model.position.y -= center.y;
-        model.position.z -= center.z;
-
-        scene.add(model);
-      },
-
-      undefined,
-
-      (error) => {
-        console.error("Error loading GLB:", error);
-      },
-    );
-
     // RESIZE
     function handleResize() {
       const width = canvas.clientWidth;
@@ -105,6 +83,7 @@ function ThreeScene({ form }) {
 
     animate();
 
+    // CLEANUP
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
@@ -113,6 +92,51 @@ function ThreeScene({ form }) {
       renderer.dispose();
     };
   }, []);
+
+  // LOAD MODEL WHEN FORM CHANGES
+  useEffect(() => {
+    const scene = sceneRef.current;
+
+    if (!scene) return;
+
+    const loader = new GLTFLoader();
+
+    const modelPath = modelPaths[form];
+
+    loader.load(
+      modelPath,
+      (gltf) => {
+        // REMOVE OLD MODEL
+        if (modelRef.current) {
+          scene.remove(modelRef.current);
+        }
+
+        const model = gltf.scene;
+
+        // CENTER MODEL
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+
+        model.position.x -= center.x;
+        model.position.y -= center.y;
+        model.position.z -= center.z;
+
+        // ADD NEW MODEL
+        scene.add(model);
+
+        modelRef.current = model;
+
+        console.log("Loaded form:", form);
+        console.log("Loaded model:", modelPath);
+      },
+
+      undefined,
+
+      (error) => {
+        console.error("Error loading GLB:", error);
+      },
+    );
+  }, [form]);
 
   return (
     <div className="three-scene">
