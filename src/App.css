@@ -20,6 +20,10 @@ body,
   width: 35%;
   height: 100vh;
   padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 30vh;
 }
 
 .three-scene {
