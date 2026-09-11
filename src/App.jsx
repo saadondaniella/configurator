@@ -5,10 +5,16 @@ import "./App.css";
 
 function App() {
   const [form, setForm] = useState(null);
+  const [color, setColor] = useState(null);
 
   return (
     <main className="app">
-      <StoryPanel form={form} setForm={setForm} />
+      <StoryPanel
+        form={form}
+        setForm={setForm}
+        color={color}
+        setColor={setColor}
+      />
       <ThreeScene form={form} />
     </main>
   );

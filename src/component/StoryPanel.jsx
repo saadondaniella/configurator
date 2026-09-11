@@ -1,11 +1,17 @@
 import { useState } from "react";
 
-function StoryPanel({ form, setForm }) {
+function StoryPanel({ form, setForm, color, setColor }) {
   const [showFormOptions, setShowFormOptions] = useState(false);
+  const [showColorOptions, setShowColorOptions] = useState(false);
 
   function handleFormSelect(selectedForm) {
     setForm(selectedForm);
     setShowFormOptions(false);
+  }
+
+  function handleColorSelect(selectedColor) {
+    setColor(selectedColor);
+    setShowColorOptions(false);
   }
 
   return (
@@ -29,7 +35,28 @@ function StoryPanel({ form, setForm }) {
         </div>
       )}
 
-      {form && <p>Perfect. Now she needed to choose a color.</p>}
+      {form && (
+        <>
+          <p>
+            Perfect. Now she needed it to be{" "}
+            <button onClick={() => setShowColorOptions(!showColorOptions)}>
+              {color || "Choose"}
+            </button>
+          </p>
+
+          {showColorOptions && (
+            <div className="color-options">
+              <button onClick={() => handleColorSelect("beige")}>Beige</button>
+
+              <button onClick={() => handleColorSelect("blue")}>Blue</button>
+
+              <button onClick={() => handleColorSelect("red")}>Red</button>
+            </div>
+          )}
+        </>
+      )}
+
+      {color && <p>Now she needed to choose the size.</p>}
     </section>
   );
 }
