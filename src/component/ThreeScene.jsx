@@ -108,7 +108,11 @@ function ThreeScene({ form }) {
     };
   }, []);
 
-  return <canvas ref={canvasRef}></canvas>;
+  return (
+    <div className="three-scene">
+      <canvas ref={canvasRef}></canvas>
+    </div>
+  );
 }
 
 export default ThreeScene;

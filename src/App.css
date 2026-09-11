@@ -1,18 +1,24 @@
-*{
-box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
 
-body {
+html,
+body,
+#root {
   margin: 0;
+  width: 100%;
+  min-height: 100%;
 }
 
 .app {
   display: flex;
-  min-height: 100vh;
+  width: 100%;
+  height: 100vh;
 }
 
 .story-panel {
   width: 35%;
+  height: 100vh;
   padding: 40px;
 }
 
@@ -22,7 +28,7 @@ body {
 }
 
 .three-scene canvas {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
 }

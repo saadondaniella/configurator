@@ -1,6 +1,6 @@
 function StoryPanel({ form, setForm }) {
   return (
-    <section Classname="Story-Panel">
+    <section className="story-panel">
       <p>Once upon a time there was a man called Allan who needed a pill. </p>
       <p>First, he had to choose its shape.</p>
       <button onClick={() => setForm("capsule")}>Capsule</button>

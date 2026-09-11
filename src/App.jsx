@@ -7,7 +7,7 @@ function App() {
   const [form, setForm] = useState("capsule");
 
   return (
-    <main ClassName="app">
+    <main className="app">
       <StoryPanel form={form} setForm={setForm} />
       <ThreeScene form={form} />
     </main>
