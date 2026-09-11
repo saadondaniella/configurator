@@ -18,22 +18,22 @@ function StoryPanel({ form, setForm, color, setColor }) {
     <section className="story-panel">
       <p>Once upon a time, there was a girl who needed a pill.</p>
 
-      <p>
-        She wanted it to be{" "}
-        <button onClick={() => setShowFormOptions(!showFormOptions)}>
-          {form || "Choose"}
-        </button>
-      </p>
+      <div className="form-selection">
+        <p>
+          She wanted it to be{" "}
+          <button onClick={() => setShowFormOptions(!showFormOptions)}>
+            {form || "Choose"}
+          </button>
+        </p>
 
-      {showFormOptions && (
-        <div className="form-options">
-          <button onClick={() => handleFormSelect("capsule")}>Capsule</button>
-
-          <button onClick={() => handleFormSelect("round")}>Round</button>
-
-          <button onClick={() => handleFormSelect("heart")}>Heart</button>
-        </div>
-      )}
+        {showFormOptions && (
+          <div className="form-options">
+            <button onClick={() => handleFormSelect("capsule")}>Capsule</button>
+            <button onClick={() => handleFormSelect("round")}>Round</button>
+            <button onClick={() => handleFormSelect("heart")}>Heart</button>
+          </div>
+        )}
+      </div>
 
       {form && (
         <>
