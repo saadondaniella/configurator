@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-function ThreeScene({ form }) {
+function ThreeScene({ form, color }) {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);

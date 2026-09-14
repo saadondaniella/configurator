@@ -37,22 +37,24 @@ function StoryPanel({ form, setForm, color, setColor }) {
 
       {form && (
         <>
-          <p>
-            Perfect. Now she needed it to be{" "}
-            <button onClick={() => setShowColorOptions(!showColorOptions)}>
-              {color || "Choose"}
-            </button>
-          </p>
+          <div className="color-selection">
+            <p>
+              Perfect. Now she needed it to be{" "}
+              <button onClick={() => setShowColorOptions(!showColorOptions)}>
+                {color || "Choose"}
+              </button>
+            </p>
 
-          {showColorOptions && (
-            <div className="color-options">
-              <button onClick={() => handleColorSelect("beige")}>Beige</button>
-
-              <button onClick={() => handleColorSelect("blue")}>Blue</button>
-
-              <button onClick={() => handleColorSelect("red")}>Red</button>
-            </div>
-          )}
+            {showColorOptions && (
+              <div className="color-options">
+                <button onClick={() => handleColorSelect("beige")}>
+                  Beige
+                </button>
+                <button onClick={() => handleColorSelect("blue")}>Blue</button>
+                <button onClick={() => handleColorSelect("red")}>Red</button>
+              </div>
+            )}
+          </div>
         </>
       )}
 

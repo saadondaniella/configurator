@@ -19,11 +19,29 @@ body,
 .story-panel {
   width: 35%;
   height: 100vh;
-  padding: 40px;
+  padding: 28vh 40px 40px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding-top: 30vh;
+  gap: 16px;
+}
+
+.story-panel p {
+  margin: 0;
+}
+
+.form-selection,
+.color-selection {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.form-options,
+.color-options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .three-scene {
@@ -48,6 +66,22 @@ body,
 }
 
 .form-options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.color-selection {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.color-selection p {
+  margin: 0;
+}
+
+.color-options {
   display: flex;
   flex-direction: column;
   align-items: flex-start;

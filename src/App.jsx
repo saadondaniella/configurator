@@ -15,7 +15,7 @@ function App() {
         color={color}
         setColor={setColor}
       />
-      <ThreeScene form={form} />
+      <ThreeScene form={form} color={color} />
     </main>
   );
 }
