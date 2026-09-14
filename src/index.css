@@ -12,4 +12,19 @@ body,
 
 body {
   margin: 0;
+  font-family: 'ABC Marist', sans-serif;
+}
+
+@font-face {
+  font-family: 'ABC Marist';
+  src: url('./assets/fonts/ABCMaristVariable-Trial.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ABC Marist';
+  src: url('./assets/fonts/ABCMaristItalicVariable-Trial.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: italic;
 }
