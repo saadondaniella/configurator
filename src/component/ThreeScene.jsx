@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -9,26 +9,18 @@ function ThreeScene({ form, color, size }) {
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
 
-  const [activeView, setActiveView] = useState(2);
-
   function handleViewChange(view) {
     const model = modelRef.current;
 
     if (!model) return;
 
-    if (view === 1) {
-      model.rotation.y = 0;
-    }
+    const rotations = {
+      1: 0,
+      2: Math.PI / 2,
+      3: -Math.PI / 2,
+    };
 
-    if (view === 2) {
-      model.rotation.y = Math.PI / 2;
-    }
-
-    if (view === 3) {
-      model.rotation.y = Math.PI;
-    }
-
-    setActiveView(view);
+    model.rotation.y = rotations[view];
   }
 
   // SET UP THREE.JS SCENE
@@ -183,7 +175,22 @@ function ThreeScene({ form, color, size }) {
       <ViewControls onViewChange={handleViewChange} />
 
       <div className="product-info">
-        <p>Product information</p>
+        <p>
+          DEVELOPER treat™. PRINCIPAL INVESTIGATOR Dr. Clara Wallin. ACTIVE
+          SUBSTANCE Amoxytocin acetate 400 mg. PHARMACEUTICAL DEVELOPMENT Treat
+          Sweden AB, Göteborg. CONTRACT MANUFACTURER/PACKAGING Recipharm,
+          Uppsala. DELIVERY MECHANISM Osmotic-controlled release oral delivery
+          system (OROS). CORE Microcrystalline cellulose, colloidal anhydrous
+          silica, magnesium stearate. COATING Aqueous film-coating in warm
+          yellow (iron oxide E172, titanium dioxide E171), polished with
+          purified carnauba wax. GEOMETRY Round, biconvex with beveled edges and
+          central break-score. DEBOSSING »L-25« on upper face, smooth reverse.
+          DIMENSIONS Diameter 8.2 mm, thickness 3.6 mm, net weight 215 mg.
+          BLISTER Aluminium foil with triplex laminate moisture barrier,
+          calendar marking in Karlo Sans 5 pt. CARTON Recycled unbleached liner
+          280 g/m² with tactile Braille. QUANTITY 30 extended-release tablets.
+          PRICE 149 SEK. BATCH SE-88301. VNR 419 820.
+        </p>
       </div>
     </div>
   );

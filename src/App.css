@@ -26,21 +26,23 @@ body,
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 16px;
+  gap: 12px;
 }
 
 .story-panel p {
   margin: 0;
 }
 
+.mood-selection > span:first-child,
 .form-selection > span:first-child,
 .color-selection > span:first-child,
 .size-selection > span:first-child {
-  flex-shrink: 0;
+  flex-shrink: 1;
 }
 
 /* STORY SELECTIONS */
 
+.mood-selection,
 .form-selection,
 .color-selection,
 .size-selection {
@@ -49,6 +51,7 @@ body,
   gap: 12px;
 }
 
+.mood-choice,
 .form-choice,
 .color-choice,
 .size-choice {
@@ -58,6 +61,7 @@ body,
 
 /* OPTIONS */
 
+.mood-options,
 .form-options,
 .color-options,
 .size-options {
@@ -98,23 +102,23 @@ body,
 
 .three-scene canvas {
   width: 100%;
-  flex: 1;
-  min-height: 0;
+  height: 100%;
   display: block;
 }
 
 /* PRODUCT INFORMATION */
 
 .product-info {
-  height: 72px;
-  flex-shrink: 0;
-  margin: 16px;
-
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  font-size: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background-color: #c3c3c3;
+  text-align: center;
+  color: white;
 }
 
 .product-info p {
@@ -178,7 +182,6 @@ body,
   pointer-events: auto;
 }
 
-
 .view-control-1 {
   left: 16px;
   top: 50%;
@@ -199,4 +202,59 @@ body,
 
 .view-control:hover {
   opacity: 0.5;
+}
+
+@media (max-width: 700px) {
+  .app {
+    height: auto;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .story-panel {
+    width: 100%;
+    height: auto;
+    min-height: 48vh;
+    padding: 48px 20px 28px;
+    gap: 18px;
+  }
+
+  .form-selection,
+  .color-selection,
+  .size-selection,
+  .final-selection {
+    flex-wrap: wrap;
+    column-gap: 8px;
+    row-gap: 4px;
+  }
+
+  .form-selection > span:first-child,
+  .color-selection > span:first-child,
+  .size-selection > span:first-child {
+    flex-shrink: 1;
+  }
+
+  .three-scene {
+    width: 100%;
+    height: 52vh;
+    min-height: 360px;
+  }
+
+  .product-info {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+  }
+
+  .view-control-1 {
+    left: 12px;
+  }
+
+  .view-control-2 {
+    top: 12px;
+  }
+
+  .view-control-3 {
+    right: 12px;
+  }
 }

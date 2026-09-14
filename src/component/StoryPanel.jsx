@@ -1,9 +1,24 @@
 import { useState } from "react";
 
-function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
+function StoryPanel({
+  mood,
+  setMood,
+  form,
+  setForm,
+  color,
+  setColor,
+  size,
+  setSize,
+}) {
+  const [showMoodOptions, setShowMoodOptions] = useState(false);
   const [showFormOptions, setShowFormOptions] = useState(false);
   const [showColorOptions, setShowColorOptions] = useState(false);
   const [showSizeOptions, setShowSizeOptions] = useState(false);
+
+  function handleMoodSelect(selectedMood) {
+    setMood(selectedMood);
+    setShowMoodOptions(false);
+  }
 
   function handleFormSelect(selectedForm) {
     setForm(selectedForm);
@@ -22,53 +37,109 @@ function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
 
   return (
     <section className="story-panel">
-      <p>Once upon a time, there was a girl who needed a pill.</p>
+      <p>Every story is worth telling.</p>
 
-      <div className="form-selection">
-        <span>She wanted it to be</span>
+      <p>
+        This particular one began with me needing change. Not really feeling
+        like myself lately, I was on the lookout for meds and stumbled upon
+        treat™.
+      </p>
 
-        <div className="form-choice">
-          {!showFormOptions && (
+      {/* MOOD */}
+      <div className="mood-selection">
+        <span>I wanted to</span>
+
+        <div className="mood-choice">
+          {!showMoodOptions && (
             <button
               className="text-button"
-              onClick={() => setShowFormOptions(true)}
+              onClick={() => setShowMoodOptions(true)}
             >
-              {form || "Choose"}
+              {mood || "Choose"}
             </button>
           )}
 
-          {showFormOptions && (
-            <div className="form-options fade-in">
+          {showMoodOptions && (
+            <div className="mood-options fade-in">
               <button
                 className="text-button"
-                onClick={() => handleFormSelect("capsule")}
+                onClick={() => handleMoodSelect("wind down")}
               >
-                Capsule
+                wind down
               </button>
 
               <button
                 className="text-button"
-                onClick={() => handleFormSelect("round")}
+                onClick={() => handleMoodSelect("get frisky")}
               >
-                Round
+                get frisky
               </button>
 
               <button
                 className="text-button"
-                onClick={() => handleFormSelect("heart")}
+                onClick={() => handleMoodSelect("be all smiles")}
               >
-                Heart
+                be all smiles
               </button>
             </div>
           )}
         </div>
 
-        <span>because ordinary shapes were never really her thing.</span>
+        <span>and found the perfect fit.</span>
       </div>
 
+      {/* FORM */}
+      {mood && (
+        <div className="form-selection fade-in">
+          <span>Browsing through the</span>
+
+          <div className="form-choice">
+            {!showFormOptions && (
+              <button
+                className="text-button"
+                onClick={() => setShowFormOptions(true)}
+              >
+                {form || "Choose"}
+              </button>
+            )}
+
+            {showFormOptions && (
+              <div className="form-options fade-in">
+                <button
+                  className="text-button"
+                  onClick={() => handleFormSelect("round")}
+                >
+                  oval
+                </button>
+
+                <button
+                  className="text-button"
+                  onClick={() => handleFormSelect("heart")}
+                >
+                  heart
+                </button>
+
+                <button
+                  className="text-button"
+                  onClick={() => handleFormSelect("capsule")}
+                >
+                  circle
+                </button>
+              </div>
+            )}
+          </div>
+
+          <span>
+            options, I finally settled on {form || "a"} shaped treat. The pill
+            was almost complete.
+          </span>
+        </div>
+      )}
+
+      {/* COLOR */}
       {form && (
         <div className="color-selection fade-in">
-          <span>Of course, it had to be</span>
+          <span>I just had to choose a beautiful color and went for</span>
 
           <div className="color-choice">
             {!showColorOptions && (
@@ -84,35 +155,34 @@ function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
               <div className="color-options fade-in">
                 <button
                   className="text-button"
-                  onClick={() => handleColorSelect("beige")}
+                  onClick={() => handleColorSelect("red")}
                 >
-                  Beige
+                  red
                 </button>
 
                 <button
                   className="text-button"
                   onClick={() => handleColorSelect("blue")}
                 >
-                  Blue
+                  aqua
                 </button>
 
                 <button
                   className="text-button"
-                  onClick={() => handleColorSelect("red")}
+                  onClick={() => handleColorSelect("beige")}
                 >
-                  Red
+                  cream
                 </button>
               </div>
             )}
           </div>
-
-          <span>her favorite color.</span>
         </div>
       )}
 
+      {/* SIZE */}
       {color && (
         <div className="size-selection fade-in">
-          <span>And since she liked to be prepared, she chose</span>
+          <span>To have a spare or two, I picked the</span>
 
           <div className="size-choice">
             {!showSizeOptions && (
@@ -150,18 +220,20 @@ function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
             )}
           </div>
 
-          <span>to make sure she had enough.</span>
+          <span>pack.</span>
         </div>
       )}
-      {form && color && size && (
+
+      {/* FINAL */}
+      {mood && form && color && size && (
         <div className="final-selection fade-in">
-          <span>And just like that, her perfect pill was ready.</span>
+          <span>Finally, I</span>
 
           <button
             className="cart-button"
-            onClick={() => console.log("Add to cart clicked")}
+            onClick={() => console.log("Add to bag clicked")}
           >
-            An I added it to my cart
+            added it to my bag
           </button>
         </div>
       )}

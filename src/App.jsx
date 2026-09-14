@@ -4,6 +4,7 @@ import ThreeScene from "./component/ThreeScene";
 import "./App.css";
 
 function App() {
+  const [mood, setMood] = useState(null);
   const [form, setForm] = useState(null);
   const [color, setColor] = useState(null);
   const [size, setSize] = useState(null);
@@ -11,6 +12,8 @@ function App() {
   return (
     <main className="app">
       <StoryPanel
+        mood={mood}
+        setMood={setMood}
         form={form}
         setForm={setForm}
         color={color}
