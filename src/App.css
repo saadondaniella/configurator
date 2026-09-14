@@ -16,10 +16,13 @@ body,
   height: 100vh;
 }
 
+/* STORY PANEL */
+
 .story-panel {
-  width: 35%;
+  width: 40%;
   height: 100vh;
-  padding: 28vh 40px 40px;
+  padding: 28vh 30px 40px;
+  font-size: 14px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -30,13 +33,30 @@ body,
   margin: 0;
 }
 
+.form-selection > span:first-child,
+.color-selection > span:first-child,
+.size-selection > span:first-child {
+  flex-shrink: 0;
+}
+
+/* STORY SELECTIONS */
+
 .form-selection,
 .color-selection,
 .size-selection {
   display: flex;
   align-items: flex-start;
-  gap: 24px;
+  gap: 12px;
 }
+
+.form-choice,
+.color-choice,
+.size-choice {
+  display: flex;
+  flex-direction: column;
+}
+
+/* OPTIONS */
 
 .form-options,
 .color-options,
@@ -44,10 +64,32 @@ body,
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: 4px;
 }
 
+/* TEXT BUTTONS */
+
+.text-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.text-button:hover {
+  opacity: 0.5;
+}
+
+/* THREE.JS */
+
 .three-scene {
-  width: 65%;
+  width: 60%;
   height: 100vh;
 
   display: flex;
@@ -61,10 +103,13 @@ body,
   display: block;
 }
 
+/* PRODUCT INFORMATION */
+
 .product-info {
   height: 72px;
   flex-shrink: 0;
   margin: 16px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,34 +121,18 @@ body,
   margin: 0;
 }
 
-.form-selection {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
+.fade-in {
+  animation: fadeIn 0.7s ease forwards;
 }
 
-.form-selection p {
-  margin: 0;
-}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 
-.form-options {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.color-selection {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-}
-
-.color-selection p {
-  margin: 0;
-}
-
-.color-options {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
