@@ -136,3 +136,24 @@ body,
     transform: translateY(0);
   }
 }
+
+.final-selection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cart-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cart-button:hover {
+  opacity: 0.5;
+}

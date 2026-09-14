@@ -24,7 +24,6 @@ function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
     <section className="story-panel">
       <p>Once upon a time, there was a girl who needed a pill.</p>
 
-      {/* FORM */}
       <div className="form-selection">
         <span>She wanted it to be</span>
 
@@ -67,7 +66,6 @@ function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
         <span>because ordinary shapes were never really her thing.</span>
       </div>
 
-      {/* COLOR */}
       {form && (
         <div className="color-selection fade-in">
           <span>Of course, it had to be</span>
@@ -112,7 +110,6 @@ function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
         </div>
       )}
 
-      {/* SIZE */}
       {color && (
         <div className="size-selection fade-in">
           <span>And since she liked to be prepared, she chose</span>
@@ -154,6 +151,18 @@ function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
           </div>
 
           <span>to make sure she had enough.</span>
+        </div>
+      )}
+      {form && color && size && (
+        <div className="final-selection fade-in">
+          <span>And just like that, her perfect pill was ready.</span>
+
+          <button
+            className="cart-button"
+            onClick={() => console.log("Add to cart clicked")}
+          >
+            An I added it to my cart
+          </button>
         </div>
       )}
     </section>
