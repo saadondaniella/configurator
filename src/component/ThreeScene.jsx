@@ -39,7 +39,7 @@ function ThreeScene({ form, color, size }) {
       1000,
     );
 
-    camera.position.set(0, 3, 5);
+    camera.position.set(0, 1.3, 2.2);
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
@@ -141,6 +141,12 @@ function ThreeScene({ form, color, size }) {
         // FIND CENTER OF MODEL
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
+        const modelSize = box.getSize(new THREE.Vector3());
+        const largestDimension = Math.max(
+          modelSize.x,
+          modelSize.y,
+          modelSize.z,
+        );
 
         // MOVE MODEL SO ITS CENTER IS AT 0, 0, 0
         model.position.sub(center);
@@ -149,6 +155,7 @@ function ThreeScene({ form, color, size }) {
         const modelGroup = new THREE.Group();
 
         modelGroup.add(model);
+        modelGroup.scale.setScalar(2 / largestDimension);
         scene.add(modelGroup);
 
         // SAVE THE GROUP IN THE REF
