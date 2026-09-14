@@ -19,7 +19,7 @@ function App() {
         setSize={setSize}
       />
 
-      <ThreeScene form={form} color={color} />
+      <ThreeScene form={form} color={color} size={size} />
     </main>
   );
 }

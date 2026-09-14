@@ -3,16 +3,10 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-function ThreeScene({ form, color }) {
+function ThreeScene({ form, color, size }) {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
-
-  const modelPaths = {
-    capsule: "/glb/Heart_Pill_Standalone.glb",
-    round: "/glb/Heart_Pill_Standalone.glb",
-    heart: "/glb/Heart_Pill_Standalone.glb",
-  };
 
   // SET UP THREE.JS SCENE
   useEffect(() => {
@@ -93,7 +87,7 @@ function ThreeScene({ form, color }) {
     };
   }, []);
 
-  // LOAD MODEL WHEN FORM CHANGES
+  // LOAD MODEL WHEN FORM, COLOR OR SIZE CHANGES
   useEffect(() => {
     const scene = sceneRef.current;
 
@@ -101,7 +95,23 @@ function ThreeScene({ form, color }) {
 
     const loader = new GLTFLoader();
 
-    const modelPath = modelPaths[form] || "/glb/Heart_Pill_Standalone.glb";
+    const formNames = {
+      capsule: "Capsule",
+      round: "Round",
+      heart: "Heart",
+    };
+
+    const colorNames = {
+      beige: "Beige",
+      blue: "Blue",
+      red: "Red",
+    };
+
+    let modelPath = "/glb/Heart_Pill_Standalone.glb";
+
+    if (form && color && size) {
+      modelPath = `/glb/${formNames[form]}_Pill_${size}_${colorNames[color]}.glb`;
+    }
 
     loader.load(
       modelPath,
@@ -127,6 +137,8 @@ function ThreeScene({ form, color }) {
         modelRef.current = model;
 
         console.log("Loaded form:", form);
+        console.log("Loaded color:", color);
+        console.log("Loaded size:", size);
         console.log("Loaded model:", modelPath);
       },
 
@@ -136,7 +148,7 @@ function ThreeScene({ form, color }) {
         console.error("Error loading GLB:", error);
       },
     );
-  }, [form]);
+  }, [form, color, size]);
 
   return (
     <div className="three-scene">
