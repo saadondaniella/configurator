@@ -6,28 +6,21 @@ import "./App.css";
 function App() {
   const [form, setForm] = useState(null);
   const [color, setColor] = useState(null);
-  const [step, setStep] = useState(1);
+  const [size, setSize] = useState(null);
 
   return (
-    <>
-      <div className="step-layout">
-        <span className="step step-current">{step}</span>
-        <span className="step step-prev">{step > 1 ? step - 1 : ""}</span>
-        <span className="step step-next">{step < 3 ? step + 1 : ""}</span>
-      </div>
+    <main className="app">
+      <StoryPanel
+        form={form}
+        setForm={setForm}
+        color={color}
+        setColor={setColor}
+        size={size}
+        setSize={setSize}
+      />
 
-      <main className="app">
-        <StoryPanel
-          form={form}
-          setForm={setForm}
-          color={color}
-          setColor={setColor}
-          step={step}
-          setStep={setStep}
-        />
-        <ThreeScene form={form} />
-      </main>
-    </>
+      <ThreeScene form={form} color={color} size={size} />
+    </main>
   );
 }
 export default App;
