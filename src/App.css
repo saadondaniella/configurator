@@ -21,15 +21,15 @@ body,
 .story-panel {
   width: 40%;
   height: 100vh;
-  padding: 28vh 40px 40px 60px;
+  padding: 28vh 40px 40px 90px;
 
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.5;
 
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 12px;
+  gap: 18px;
 }
 
 .story-panel > * {
