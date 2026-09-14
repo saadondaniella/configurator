@@ -52,3 +52,27 @@ body,
   flex-direction: column;
   align-items: flex-start;
 }
+
+.step-indicator {
+  display: flex;
+
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.step {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  color: #999;
+}
+
+.step.active {
+  border-color: #333;
+  color: #333;
+  font-weight: bold;
+}

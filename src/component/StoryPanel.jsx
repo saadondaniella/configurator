@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function StoryPanel({ form, setForm, color, setColor }) {
+function StoryPanel({ form, setForm, color, setColor, step, setStep }) {
   const [showFormOptions, setShowFormOptions] = useState(false);
   const [showColorOptions, setShowColorOptions] = useState(false);
 
@@ -16,6 +16,7 @@ function StoryPanel({ form, setForm, color, setColor }) {
 
   return (
     <section className="story-panel">
+
       <p>Once upon a time, there was a girl who needed a pill.</p>
 
       <div className="form-selection">
