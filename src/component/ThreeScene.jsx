@@ -153,6 +153,10 @@ function ThreeScene({ form, color, size }) {
   return (
     <div className="three-scene">
       <canvas ref={canvasRef}></canvas>
+
+      <div className="product-info">
+        <p>Product information</p>
+      </div>
     </div>
   );
 }

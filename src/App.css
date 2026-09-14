@@ -49,12 +49,31 @@ body,
 .three-scene {
   width: 65%;
   height: 100vh;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .three-scene canvas {
-  display: block;
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: block;
+}
+
+.product-info {
+  height: 72px;
+  flex-shrink: 0;
+  margin: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #c3c3c3;
+}
+
+.product-info p {
+  margin: 0;
 }
 
 .form-selection {
