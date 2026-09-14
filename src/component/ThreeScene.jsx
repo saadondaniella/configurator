@@ -43,12 +43,25 @@ function ThreeScene({ form, color, size }) {
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
+    const hemiLight = new THREE.HemisphereLight(0xfff1d6, 0x1f2d3d, 1.2);
+    scene.add(hemiLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 4.5);
+    keyLight.position.copy(camera.position);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
+    scene.add(keyLight);
+
+    keyLight.target.position.set(0, 0, 0);
+    scene.add(keyLight.target);
+
+    const rimLight = new THREE.DirectionalLight(0x8ab4ff, 1.2);
+    rimLight.position.set(0, 3, -5);
+    scene.add(rimLight);
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer({
@@ -57,6 +70,8 @@ function ThreeScene({ form, color, size }) {
     });
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -137,6 +152,13 @@ function ThreeScene({ form, color, size }) {
         }
 
         const model = gltf.scene;
+
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
 
         // FIND CENTER OF MODEL
         const box = new THREE.Box3().setFromObject(model);
