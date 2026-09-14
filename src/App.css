@@ -31,14 +31,16 @@ body,
 }
 
 .form-selection,
-.color-selection {
+.color-selection,
+.size-selection {
   display: flex;
   align-items: flex-start;
   gap: 24px;
 }
 
 .form-options,
-.color-options {
+.color-options,
+.size-options {
   display: flex;
   flex-direction: column;
   align-items: flex-start;

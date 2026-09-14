@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-function StoryPanel({ form, setForm, color, setColor }) {
+function StoryPanel({ form, setForm, color, setColor, size, setSize }) {
   const [showFormOptions, setShowFormOptions] = useState(false);
   const [showColorOptions, setShowColorOptions] = useState(false);
+  const [showSizeOptions, setShowSizeOptions] = useState(false);
 
   function handleFormSelect(selectedForm) {
     setForm(selectedForm);
@@ -12,6 +13,11 @@ function StoryPanel({ form, setForm, color, setColor }) {
   function handleColorSelect(selectedColor) {
     setColor(selectedColor);
     setShowColorOptions(false);
+  }
+
+  function handleSizeSelect(selectedSize) {
+    setSize(selectedSize);
+    setShowSizeOptions(false);
   }
 
   return (
@@ -29,36 +35,55 @@ function StoryPanel({ form, setForm, color, setColor }) {
         {showFormOptions && (
           <div className="form-options">
             <button onClick={() => handleFormSelect("capsule")}>Capsule</button>
+
             <button onClick={() => handleFormSelect("round")}>Round</button>
+
             <button onClick={() => handleFormSelect("heart")}>Heart</button>
           </div>
         )}
       </div>
 
       {form && (
-        <>
-          <div className="color-selection">
-            <p>
-              Perfect. Now she needed it to be{" "}
-              <button onClick={() => setShowColorOptions(!showColorOptions)}>
-                {color || "Choose"}
-              </button>
-            </p>
+        <div className="color-selection">
+          <p>
+            Perfect. Now she needed it to be{" "}
+            <button onClick={() => setShowColorOptions(!showColorOptions)}>
+              {color || "Choose"}
+            </button>
+          </p>
 
-            {showColorOptions && (
-              <div className="color-options">
-                <button onClick={() => handleColorSelect("beige")}>
-                  Beige
-                </button>
-                <button onClick={() => handleColorSelect("blue")}>Blue</button>
-                <button onClick={() => handleColorSelect("red")}>Red</button>
-              </div>
-            )}
-          </div>
-        </>
+          {showColorOptions && (
+            <div className="color-options">
+              <button onClick={() => handleColorSelect("beige")}>Beige</button>
+
+              <button onClick={() => handleColorSelect("blue")}>Blue</button>
+
+              <button onClick={() => handleColorSelect("red")}>Red</button>
+            </div>
+          )}
+        </div>
       )}
 
-      {color && <p>Now she needed to choose the size.</p>}
+      {color && (
+        <div className="size-selection">
+          <p>
+            Now she needed to choose the size{" "}
+            <button onClick={() => setShowSizeOptions(!showSizeOptions)}>
+              {size || "Choose"}
+            </button>
+          </p>
+
+          {showSizeOptions && (
+            <div className="size-options">
+              <button onClick={() => handleSizeSelect("2x3")}>2x3</button>
+
+              <button onClick={() => handleSizeSelect("2x4")}>2x4</button>
+
+              <button onClick={() => handleSizeSelect("2x5")}>2x5</button>
+            </div>
+          )}
+        </div>
+      )}
     </section>
   );
 }

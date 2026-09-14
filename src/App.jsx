@@ -6,6 +6,7 @@ import "./App.css";
 function App() {
   const [form, setForm] = useState(null);
   const [color, setColor] = useState(null);
+  const [size, setSize] = useState(null);
 
   return (
     <main className="app">
@@ -14,7 +15,10 @@ function App() {
         setForm={setForm}
         color={color}
         setColor={setColor}
+        size={size}
+        setSize={setSize}
       />
+
       <ThreeScene form={form} color={color} />
     </main>
   );
