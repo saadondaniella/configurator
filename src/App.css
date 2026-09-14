@@ -143,6 +143,11 @@ body,
 
   position: relative;
 
+  background-color: #d9d5cc;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
   display: flex;
   flex-direction: column;
 }

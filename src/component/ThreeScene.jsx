@@ -9,6 +9,14 @@ function ThreeScene({ form, color, size }) {
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
 
+  const backgroundImages = {
+    red: "/backgrounds/background-red.jpg",
+    blue: "/backgrounds/background-aqua.jpg",
+    beige: "/backgrounds/background-cream.jpg",
+  };
+
+  const backgroundImage = backgroundImages[color];
+
   function handleViewChange(view) {
     const model = modelRef.current;
 
@@ -54,6 +62,7 @@ function ThreeScene({ form, color, size }) {
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
+      alpha: true,
     });
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -176,7 +185,12 @@ function ThreeScene({ form, color, size }) {
   }, [form, color, size]);
 
   return (
-    <div className="three-scene">
+    <div
+      className="three-scene"
+      style={{
+        backgroundImage: backgroundImage ? `url("${backgroundImage}")` : "none",
+      }}
+    >
       <canvas ref={canvasRef}></canvas>
 
       <ViewControls onViewChange={handleViewChange} />
