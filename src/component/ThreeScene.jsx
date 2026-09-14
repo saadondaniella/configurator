@@ -1,12 +1,35 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import ViewControls from "./ViewControls";
 
 function ThreeScene({ form, color, size }) {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
+
+  const [activeView, setActiveView] = useState(2);
+
+  function handleViewChange(view) {
+    const model = modelRef.current;
+
+    if (!model) return;
+
+    if (view === 1) {
+      model.rotation.y = 0;
+    }
+
+    if (view === 2) {
+      model.rotation.y = Math.PI / 2;
+    }
+
+    if (view === 3) {
+      model.rotation.y = Math.PI;
+    }
+
+    setActiveView(view);
+  }
 
   // SET UP THREE.JS SCENE
   useEffect(() => {
@@ -123,18 +146,21 @@ function ThreeScene({ form, color, size }) {
 
         const model = gltf.scene;
 
-        // CENTER MODEL
+        // FIND CENTER OF MODEL
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
 
-        model.position.x -= center.x;
-        model.position.y -= center.y;
-        model.position.z -= center.z;
+        // MOVE MODEL SO ITS CENTER IS AT 0, 0, 0
+        model.position.sub(center);
 
-        // ADD NEW MODEL
-        scene.add(model);
+        // CREATE A CENTERED GROUP
+        const modelGroup = new THREE.Group();
 
-        modelRef.current = model;
+        modelGroup.add(model);
+        scene.add(modelGroup);
+
+        // SAVE THE GROUP IN THE REF
+        modelRef.current = modelGroup;
 
         console.log("Loaded form:", form);
         console.log("Loaded color:", color);
@@ -153,6 +179,8 @@ function ThreeScene({ form, color, size }) {
   return (
     <div className="three-scene">
       <canvas ref={canvasRef}></canvas>
+
+      <ViewControls onViewChange={handleViewChange} />
 
       <div className="product-info">
         <p>Product information</p>

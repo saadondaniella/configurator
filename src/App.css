@@ -91,9 +91,9 @@ body,
 .three-scene {
   width: 60%;
   height: 100vh;
-
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .three-scene canvas {
@@ -155,5 +155,48 @@ body,
 }
 
 .cart-button:hover {
+  opacity: 0.5;
+}
+
+.view-controls {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.view-control {
+  position: absolute;
+
+  padding: 0;
+  border: 0;
+  background: transparent;
+
+  font: inherit;
+  color: white;
+  cursor: pointer;
+
+  pointer-events: auto;
+}
+
+
+.view-control-1 {
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.view-control-2 {
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.view-control-3 {
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.view-control:hover {
   opacity: 0.5;
 }
