@@ -50,7 +50,7 @@ body,
   width: 35%;
   flex: 0 0 35%;
   height: 100vh;
-  padding: 30vh 20px 40px 50px;
+  padding: 30vh 50px 40px 60px;
   font-size: 12px;
   display: flex;
   flex-direction: column;
@@ -215,19 +215,19 @@ body,
 }
 
 .intro-complete .story-reveal-1 {
-  animation-delay: 1s;
+  animation-delay: 1.8s;
 }
 
 .intro-complete .story-reveal-2 {
-  animation-delay: 2.1s;
+  animation-delay: 2.9s;
 }
 
 .intro-complete .story-reveal-3 {
-  animation-delay: 3.2s;
+  animation-delay: 4s;
 }
 
 .intro-complete .story-reveal-4 {
-  animation-delay: 4.3s;
+  animation-delay: 5.1s;
 }
 
 @keyframes fadeIn {
