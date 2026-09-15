@@ -146,21 +146,26 @@ function ThreeScene({ form, color, size, previewForm, previewColor }) {
       red: "Red",
     };
 
-    const activeForm = previewForm || form || "capsule";
-    const activeColor = previewColor || color || "red";
-    const isCompleteSelection =
-      form && color && size && !previewForm && !previewColor;
+    const activeForm = previewForm || form || "heart";
 
-    let modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
+    // DEFAULT COLOR
+    const activeColor = previewColor || color || "blue";
 
-    if (activeForm === "heart" && activeColor === "red") {
-      modelPath = "/glb/Heart_Pill_Individual_Red-v1.glb";
-    }
+    let modelPath;
 
-    if (isCompleteSelection) {
+    // SIZE SELECTED → SHOW BLISTER
+    if (form && color && size) {
       modelPath = `/glb/${formNames[form]}_Pill_${size}_${colorNames[color]}.glb`;
     }
 
+    // NO SIZE → SHOW INDIVIDUAL PILL
+    else {
+      modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
+
+      if (activeForm === "heart" && activeColor === "red") {
+        modelPath = "/glb/Heart_Pill_Individual_Red-v1.glb";
+      }
+    }
     loader.load(
       modelPath,
       (gltf) => {

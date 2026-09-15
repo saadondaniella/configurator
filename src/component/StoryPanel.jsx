@@ -24,12 +24,14 @@ function StoryPanel({
 
   function handleFormSelect(selectedForm) {
     setForm(selectedForm);
+    onFormPreview(null);
     setShowFormOptions(false);
   }
 
   function handleColorSelect(selectedColor) {
     setColor(selectedColor);
     setSize(null);
+    onColorPreview(null);
     setShowSizeOptions(true);
     setShowColorOptions(false);
   }
