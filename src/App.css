@@ -97,22 +97,6 @@ body,
   vertical-align: top;
 }
 
-.mood-options {
-  font-style: italic;
-}
-
-.form-options {
-  font-style: italic;
-}
-
-.color-options {
-  font-style: italic;
-}
-
-.size-options {
-  font-style: italic;
-}
-
 .mood-options .text-button,
 .form-options .text-button,
 .color-options .text-button,
@@ -140,6 +124,10 @@ body,
   cursor: pointer;
 
   text-decoration: none;
+}
+
+.selected-value {
+  font-style: italic;
 }
 
 .text-button:hover {
