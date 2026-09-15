@@ -88,6 +88,7 @@ function ThreeScene({ form, color, size }) {
     // CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.enableZoom = false;
 
     // RESIZE
     function handleResize() {
