@@ -47,7 +47,7 @@ function ThreeScene({ form, color, size }) {
       1000,
     );
 
-    camera.position.set(0, 1.3, 2.2);
+    camera.position.set(0, 1.3, 1.0);
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
