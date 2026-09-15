@@ -47,7 +47,7 @@ function ThreeScene({ form, color, size, previewForm, previewColor }) {
       1000,
     );
 
-    camera.position.set(0, 1.3, 2.2);
+    camera.position.set(0, 1.3, 1.0);
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
@@ -88,6 +88,7 @@ function ThreeScene({ form, color, size, previewForm, previewColor }) {
     // CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.enableZoom = false;
 
     // RESIZE
     function handleResize() {
