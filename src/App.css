@@ -12,7 +12,6 @@ body,
 
 .app {
   position: relative;
-
   display: flex;
   width: 100%;
   height: 100vh;
@@ -22,12 +21,10 @@ body,
   position: absolute;
   top: 16px;
   left: 16px;
-
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
-
   z-index: 10;
 }
 
@@ -37,16 +34,12 @@ body,
   height: auto;
 }
 
-/* STORY PANEL */
-
 .story-panel {
   width: 40%;
   height: 100vh;
-  padding: 20vh 10px 40px 90px;
-
+  padding: 20vh 10px 40px 60px;
   font-size: 12px;
   line-height: 25px;
-
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -54,11 +47,19 @@ body,
 }
 
 .story-panel > * {
-  max-width: 390px;
+  max-width: 500px;
 }
 
 .story-panel p {
   margin: 0;
+}
+
+.story-sentence {
+  display: block;
+}
+
+.story-sentence + .story-sentence {
+  margin-top: 25px;
 }
 
 /* STORY SELECTIONS */
@@ -91,7 +92,7 @@ body,
   align-items: flex-start;
   gap: 2px;
 
-  line-height: 1.5;
+  line-height: 25px;
   position: relative;
   top: -18px;
   vertical-align: top;

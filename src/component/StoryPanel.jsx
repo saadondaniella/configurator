@@ -62,9 +62,13 @@ function StoryPanel({
       <p>Every story is worth telling.</p>
 
       <p>
-        This particular one began with me needing change. Not really feeling
-        like myself lately, I was on the lookout for meds and stumbled upon
-        treat™.
+        <span className="story-sentence">
+          This particular one began with me needing change.
+        </span>
+        <span className="story-sentence">
+          Not really feeling like myself lately, I was on the lookout for meds
+          and stumbled upon treat™.
+        </span>
       </p>
 
       {/* MOOD */}
@@ -111,6 +115,7 @@ function StoryPanel({
         </div>
 
         <span>and found the perfect fit.</span>
+
       </div>
 
       {/* FORM */}
@@ -161,8 +166,7 @@ function StoryPanel({
           </div>
 
           <span>
-            options, I finally settled on {formLabels[form] || "a"} shaped
-            treat. The pill was almost complete.
+            , I finally settled on {formLabels[form] || "a"} shaped treats.
           </span>
         </div>
       )}
@@ -170,6 +174,8 @@ function StoryPanel({
       {/* COLOR */}
       {form && (
         <div className="color-selection fade-in">
+          <span>The pill was almost complete.</span>
+
           <span>I just had to choose a beautiful color and went for</span>
 
           <div className="color-choice">
