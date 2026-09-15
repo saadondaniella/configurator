@@ -51,12 +51,27 @@ function ThreeScene({ form, color, size }) {
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+    // Ambient + hemisphere
+
+    const LIGHT_INTENSITY = 1.4;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
+    const lightPositions = [
+      [5, 1, 1],
+      [-5, 1, -1],
+      [1, 5, 1],
+      [1, -5, -1],
+      [1, 1, 5],
+      [-1, 1, -5],
+    ];
+
+    lightPositions.forEach(([x, y, z]) => {
+      const light = new THREE.DirectionalLight(0xffffff, LIGHT_INTENSITY);
+      light.position.set(x, y, z);
+      scene.add(light);
+    });
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer({
@@ -67,7 +82,7 @@ function ThreeScene({ form, color, size }) {
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1;
+    renderer.toneMappingExposure = 0.85;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     // CONTROLS
