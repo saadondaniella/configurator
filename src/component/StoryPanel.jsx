@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function StoryPanel({
   mood,
@@ -11,11 +11,26 @@ function StoryPanel({
   setSize,
   onFormPreview,
   onColorPreview,
+  onSizePreview,
+  resetKey,
 }) {
+  const formLabels = {
+    round: "circle",
+    heart: "heart",
+    capsule: "oval",
+  };
+
   const [showMoodOptions, setShowMoodOptions] = useState(true);
   const [showFormOptions, setShowFormOptions] = useState(true);
   const [showColorOptions, setShowColorOptions] = useState(true);
   const [showSizeOptions, setShowSizeOptions] = useState(true);
+
+  useEffect(() => {
+    setShowMoodOptions(true);
+    setShowFormOptions(true);
+    setShowColorOptions(true);
+    setShowSizeOptions(true);
+  }, [resetKey]);
 
   function handleMoodSelect(selectedMood) {
     setMood(selectedMood);
@@ -38,6 +53,7 @@ function StoryPanel({
 
   function handleSizeSelect(selectedSize) {
     setSize(selectedSize);
+    onSizePreview(null);
     setShowSizeOptions(false);
   }
 
@@ -66,9 +82,10 @@ function StoryPanel({
           )}
 
           {showMoodOptions && (
-            <div className="mood-options fade-in">
+            <div className="mood-options">
               <button
                 className="text-button"
+                style={{ order: mood === "wind down" ? -1 : 0 }}
                 onClick={() => handleMoodSelect("wind down")}
               >
                 wind down
@@ -76,6 +93,7 @@ function StoryPanel({
 
               <button
                 className="text-button"
+                style={{ order: mood === "get frisky" ? -1 : 0 }}
                 onClick={() => handleMoodSelect("get frisky")}
               >
                 get frisky
@@ -83,6 +101,7 @@ function StoryPanel({
 
               <button
                 className="text-button"
+                style={{ order: mood === "be all smiles" ? -1 : 0 }}
                 onClick={() => handleMoodSelect("be all smiles")}
               >
                 be all smiles
@@ -105,16 +124,16 @@ function StoryPanel({
                 className="text-button"
                 onClick={() => setShowFormOptions(true)}
               >
-                {form}
+                {formLabels[form]}
               </button>
             )}
 
             {showFormOptions && (
-              <div className="form-options fade-in">
+              <div className="form-options">
                 <button
                   className="text-button"
-                  onClick={() => handleFormSelect("round")}
-                  onMouseEnter={() => onFormPreview("round")}
+                  onClick={() => handleFormSelect("capsule")}
+                  onMouseEnter={() => onFormPreview("capsule")}
                   onMouseLeave={() => onFormPreview(null)}
                 >
                   oval
@@ -131,8 +150,8 @@ function StoryPanel({
 
                 <button
                   className="text-button"
-                  onClick={() => handleFormSelect("capsule")}
-                  onMouseEnter={() => onFormPreview("capsule")}
+                  onClick={() => handleFormSelect("round")}
+                  onMouseEnter={() => onFormPreview("round")}
                   onMouseLeave={() => onFormPreview(null)}
                 >
                   circle
@@ -142,8 +161,8 @@ function StoryPanel({
           </div>
 
           <span>
-            options, I finally settled on {form || "a"} shaped treat. The pill
-            was almost complete.
+            options, I finally settled on {formLabels[form] || "a"} shaped
+            treat. The pill was almost complete.
           </span>
         </div>
       )}
@@ -164,9 +183,10 @@ function StoryPanel({
             )}
 
             {showColorOptions && (
-              <div className="color-options fade-in">
+              <div className="color-options">
                 <button
                   className="text-button"
+                  style={{ order: color === "red" ? -1 : 0 }}
                   onClick={() => handleColorSelect("red")}
                   onMouseEnter={() => onColorPreview("red")}
                   onMouseLeave={() => onColorPreview(null)}
@@ -176,6 +196,7 @@ function StoryPanel({
 
                 <button
                   className="text-button"
+                  style={{ order: color === "blue" ? -1 : 0 }}
                   onClick={() => handleColorSelect("blue")}
                   onMouseEnter={() => onColorPreview("blue")}
                   onMouseLeave={() => onColorPreview(null)}
@@ -185,6 +206,7 @@ function StoryPanel({
 
                 <button
                   className="text-button"
+                  style={{ order: color === "beige" ? -1 : 0 }}
                   onClick={() => handleColorSelect("beige")}
                   onMouseEnter={() => onColorPreview("beige")}
                   onMouseLeave={() => onColorPreview(null)}
@@ -213,24 +235,33 @@ function StoryPanel({
             )}
 
             {showSizeOptions && (
-              <div className="size-options fade-in">
+              <div className="size-options">
                 <button
                   className="text-button"
+                  style={{ order: size === "2x3" ? -1 : 0 }}
                   onClick={() => handleSizeSelect("2x3")}
+                  onMouseEnter={() => onSizePreview("2x3")}
+                  onMouseLeave={() => onSizePreview(null)}
                 >
                   2x3
                 </button>
 
                 <button
                   className="text-button"
+                  style={{ order: size === "2x4" ? -1 : 0 }}
                   onClick={() => handleSizeSelect("2x4")}
+                  onMouseEnter={() => onSizePreview("2x4")}
+                  onMouseLeave={() => onSizePreview(null)}
                 >
                   2x4
                 </button>
 
                 <button
                   className="text-button"
+                  style={{ order: size === "2x5" ? -1 : 0 }}
                   onClick={() => handleSizeSelect("2x5")}
+                  onMouseEnter={() => onSizePreview("2x5")}
+                  onMouseLeave={() => onSizePreview(null)}
                 >
                   2x5
                 </button>
