@@ -20,6 +20,12 @@ function StoryPanel({
     capsule: "oval",
   };
 
+  const colorLabels = {
+    red: "red",
+    blue: "aqua",
+    beige: "cream",
+  };
+
   const [showMoodOptions, setShowMoodOptions] = useState(true);
   const [showFormOptions, setShowFormOptions] = useState(true);
   const [showColorOptions, setShowColorOptions] = useState(true);
@@ -59,69 +65,68 @@ function StoryPanel({
 
   return (
     <section className="story-panel">
-      <p>Every story is worth telling.</p>
+      <p className="story-line">Every story is worth telling.</p>
 
-      <p>
-        <span className="story-sentence">
-          This particular one began with me needing change.
-        </span>
-        <span className="story-sentence">
-          Not really feeling like myself lately, I was on the lookout for meds
-          and stumbled upon treat™.
-        </span>
+      <p className="story-line">
+        This particular one began with me needing change.
+      </p>
+
+      <p className="story-line">
+        Not really feeling like myself lately, I was on the lookout for meds and
+        stumbled upon treat™.
       </p>
 
       {/* MOOD */}
-      <div className="mood-selection">
-        <span>I wanted to</span>
+      <div className="story-block">
+        <div className="story-line">
+          <span>I wanted to</span>
 
-        <div className="mood-choice">
-          {!showMoodOptions && (
-            <button
-              className="text-button selected-value"
-              onClick={() => setShowMoodOptions(true)}
-            >
-              {mood}
-            </button>
-          )}
-
-          {showMoodOptions && (
-            <div className="mood-options">
+          <div className="mood-choice">
+            {!showMoodOptions && (
               <button
-                className="text-button"
-                style={{ order: mood === "wind down" ? -1 : 0 }}
-                onClick={() => handleMoodSelect("wind down")}
+                className="text-button selected-value"
+                onClick={() => setShowMoodOptions(true)}
               >
-                wind down
+                {mood}
               </button>
+            )}
 
-              <button
-                className="text-button"
-                style={{ order: mood === "get frisky" ? -1 : 0 }}
-                onClick={() => handleMoodSelect("get frisky")}
-              >
-                get frisky
-              </button>
+            {showMoodOptions && (
+              <div className="mood-options">
+                <button
+                  className="text-button"
+                  style={{ order: mood === "wind down" ? -1 : 0 }}
+                  onClick={() => handleMoodSelect("wind down")}
+                >
+                  wind down
+                </button>
 
-              <button
-                className="text-button"
-                style={{ order: mood === "be all smiles" ? -1 : 0 }}
-                onClick={() => handleMoodSelect("be all smiles")}
-              >
-                be all smiles
-              </button>
-            </div>
-          )}
+                <button
+                  className="text-button"
+                  style={{ order: mood === "get frisky" ? -1 : 0 }}
+                  onClick={() => handleMoodSelect("get frisky")}
+                >
+                  get frisky
+                </button>
+
+                <button
+                  className="text-button"
+                  style={{ order: mood === "be all smiles" ? -1 : 0 }}
+                  onClick={() => handleMoodSelect("be all smiles")}
+                >
+                  be all smiles
+                </button>
+              </div>
+            )}
+          </div>
+
+          <span>and found the perfect fit.</span>
         </div>
-
-        <span>and found the perfect fit.</span>
-
       </div>
 
-      {/* FORM */}
       {mood && (
         <div className="form-selection fade-in">
-          <span>Browsing through the</span>
+          <span>Browsing through the options, I finally settled on</span>
 
           <div className="form-choice">
             {!showFormOptions && (
@@ -165,117 +170,117 @@ function StoryPanel({
             )}
           </div>
 
-          <span>
-            , I finally settled on {formLabels[form] || "a"} shaped treats.
-          </span>
+          <span>shaped treats.</span>
         </div>
       )}
 
       {/* COLOR */}
       {form && (
-        <div className="color-selection fade-in">
-          <span>The pill was almost complete.</span>
+        <div className="story-block fade-in">
+          <div className="story-line">
+            <span>I just had to choose a beautiful color and went for</span>
 
-          <span>I just had to choose a beautiful color and went for</span>
-
-          <div className="color-choice">
-            {!showColorOptions && (
-              <button
-                className="text-button selected-value"
-                onClick={() => setShowColorOptions(true)}
-              >
-                {color}
-              </button>
-            )}
-
-            {showColorOptions && (
-              <div className="color-options">
+            <div className="color-choice">
+              {!showColorOptions && (
                 <button
-                  className="text-button"
-                  style={{ order: color === "red" ? -1 : 0 }}
-                  onClick={() => handleColorSelect("red")}
-                  onMouseEnter={() => onColorPreview("red")}
-                  onMouseLeave={() => onColorPreview(null)}
+                  className="text-button selected-value"
+                  onClick={() => setShowColorOptions(true)}
                 >
-                  red
+                  {colorLabels[color]}
                 </button>
+              )}
 
-                <button
-                  className="text-button"
-                  style={{ order: color === "blue" ? -1 : 0 }}
-                  onClick={() => handleColorSelect("blue")}
-                  onMouseEnter={() => onColorPreview("blue")}
-                  onMouseLeave={() => onColorPreview(null)}
-                >
-                  aqua
-                </button>
+              {showColorOptions && (
+                <div className="color-options">
+                  <button
+                    className="text-button"
+                    style={{ order: color === "red" ? -1 : 0 }}
+                    onClick={() => handleColorSelect("red")}
+                    onMouseEnter={() => onColorPreview("red")}
+                    onMouseLeave={() => onColorPreview(null)}
+                  >
+                    red
+                  </button>
 
-                <button
-                  className="text-button"
-                  style={{ order: color === "beige" ? -1 : 0 }}
-                  onClick={() => handleColorSelect("beige")}
-                  onMouseEnter={() => onColorPreview("beige")}
-                  onMouseLeave={() => onColorPreview(null)}
-                >
-                  cream
-                </button>
-              </div>
-            )}
+                  <button
+                    className="text-button"
+                    style={{ order: color === "blue" ? -1 : 0 }}
+                    onClick={() => handleColorSelect("blue")}
+                    onMouseEnter={() => onColorPreview("blue")}
+                    onMouseLeave={() => onColorPreview(null)}
+                  >
+                    aqua
+                  </button>
+
+                  <button
+                    className="text-button"
+                    style={{ order: color === "beige" ? -1 : 0 }}
+                    onClick={() => handleColorSelect("beige")}
+                    onMouseEnter={() => onColorPreview("beige")}
+                    onMouseLeave={() => onColorPreview(null)}
+                  >
+                    cream
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
 
       {/* SIZE */}
       {color && (
-        <div className="size-selection fade-in">
-          <span>To have a spare or two, I picked the</span>
+        <div className="story-block fade-in">
+          <div className="story-line">
+            <span>To have a spare or two, I picked the</span>
 
-          <div className="size-choice">
-            {!showSizeOptions && (
-              <button
-                className="text-button selected-value"
-                onClick={() => setShowSizeOptions(true)}
-              >
-                {size}
-              </button>
-            )}
-
-            {showSizeOptions && (
-              <div className="size-options">
+            <div className="size-choice">
+              {!showSizeOptions && (
                 <button
-                  className="text-button"
-                  style={{ order: size === "2x3" ? -1 : 0 }}
-                  onClick={() => handleSizeSelect("2x3")}
-                  onMouseEnter={() => onSizePreview("2x3")}
-                  onMouseLeave={() => onSizePreview(null)}
+                  className="text-button selected-value"
+                  onClick={() => setShowSizeOptions(true)}
                 >
-                  2x3
+                  {size}
                 </button>
+              )}
 
-                <button
-                  className="text-button"
-                  style={{ order: size === "2x4" ? -1 : 0 }}
-                  onClick={() => handleSizeSelect("2x4")}
-                  onMouseEnter={() => onSizePreview("2x4")}
-                  onMouseLeave={() => onSizePreview(null)}
-                >
-                  2x4
-                </button>
+              {showSizeOptions && (
+                <div className="size-options">
+                  <button
+                    className="text-button"
+                    style={{ order: size === "2x3" ? -1 : 0 }}
+                    onClick={() => handleSizeSelect("2x3")}
+                    onMouseEnter={() => onSizePreview("2x3")}
+                    onMouseLeave={() => onSizePreview(null)}
+                  >
+                    2x3
+                  </button>
 
-                <button
-                  className="text-button"
-                  style={{ order: size === "2x5" ? -1 : 0 }}
-                  onClick={() => handleSizeSelect("2x5")}
-                  onMouseEnter={() => onSizePreview("2x5")}
-                  onMouseLeave={() => onSizePreview(null)}
-                >
-                  2x5
-                </button>
-              </div>
-            )}
+                  <button
+                    className="text-button"
+                    style={{ order: size === "2x4" ? -1 : 0 }}
+                    onClick={() => handleSizeSelect("2x4")}
+                    onMouseEnter={() => onSizePreview("2x4")}
+                    onMouseLeave={() => onSizePreview(null)}
+                  >
+                    2x4
+                  </button>
+
+                  <button
+                    className="text-button"
+                    style={{ order: size === "2x5" ? -1 : 0 }}
+                    onClick={() => handleSizeSelect("2x5")}
+                    onMouseEnter={() => onSizePreview("2x5")}
+                    onMouseLeave={() => onSizePreview(null)}
+                  >
+                    2x5
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <span>pack.</span>
           </div>
-
-          <span>pack.</span>
         </div>
       )}
 

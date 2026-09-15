@@ -37,13 +37,17 @@ body,
 .story-panel {
   width: 40%;
   height: 100vh;
-  padding: 20vh 10px 40px 60px;
+  padding: 20vh 40px 40px 60px;
   font-size: 12px;
-  line-height: 25px;
+  line-height: 1.5;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 25px;
+}
+
+.story-line {
+  margin: 0;
 }
 
 .story-panel > * {
@@ -90,12 +94,11 @@ body,
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
-
-  line-height: 25px;
+  gap: 0;
+  line-height: 16px;
   position: relative;
-  top: -18px;
-  vertical-align: top;
+  top: -16px;
+  vertical-align: baseline;
 }
 
 .mood-options .text-button,
