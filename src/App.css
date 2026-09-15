@@ -11,9 +11,22 @@ body,
 }
 
 .app {
+  position: relative;
+
   display: flex;
   width: 100%;
   height: 100vh;
+}
+
+.app-logo {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+
+  width: 47px;
+  height: auto;
+
+  z-index: 10;
 }
 
 /* STORY PANEL */
@@ -21,19 +34,19 @@ body,
 .story-panel {
   width: 40%;
   height: 100vh;
-  padding: 28vh 40px 40px 90px;
+  padding: 20vh 10px 40px 90px;
 
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 25px;
 
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 18px;
+  gap: 25px;
 }
 
 .story-panel > * {
-  max-width: 360px;
+  max-width: 390px;
 }
 
 .story-panel p {
@@ -47,7 +60,7 @@ body,
 .color-selection,
 .size-selection {
   display: block;
-  line-height: 1.5;
+  line-height: 25px;
 }
 
 .mood-choice,
@@ -56,7 +69,7 @@ body,
 .size-choice {
   display: inline-block;
   margin: 0 6px;
-  vertical-align: top;
+  vertical-align: baseline;
 }
 
 /* OPTIONS */
@@ -70,7 +83,33 @@ body,
   align-items: flex-start;
   gap: 2px;
 
+  line-height: 1.5;
+  position: relative;
+  top: -18px;
   vertical-align: top;
+}
+
+.mood-options {
+  font-style: italic;
+}
+
+.form-options {
+  font-style: italic;
+}
+
+.color-options {
+  font-style: italic;
+}
+
+.size-options {
+  font-style: italic;
+}
+
+.mood-options .text-button,
+.form-options .text-button,
+.color-options .text-button,
+.size-options .text-button {
+  text-decoration: none;
 }
 
 /* TEXT BUTTONS */
@@ -84,8 +123,7 @@ body,
   color: inherit;
   cursor: pointer;
 
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
 }
 
 .text-button:hover {
@@ -104,11 +142,9 @@ body,
   padding: 0;
   border: 0;
   background: transparent;
-
   font: inherit;
   color: inherit;
   cursor: pointer;
-
   text-decoration: underline;
   text-underline-offset: 3px;
 }
