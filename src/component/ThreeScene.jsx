@@ -24,6 +24,14 @@ function ThreeScene({
 
   const backgroundImage = backgroundImages[color];
 
+  // Default-view — used at start and when user clicks the model
+  const defaultCameraPosition = new THREE.Vector3(0, 1.3, 1.0);
+  const defaultTarget = new THREE.Vector3(0, 0, 0);
+
+  // RAYCASTER to detect click on the model
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+
   function handleViewChange(view) {
     const model = modelRef.current;
 
@@ -97,6 +105,50 @@ function ThreeScene({
     controls.enableDamping = true;
     controls.enableZoom = false;
 
+    // TRACK POINTER MOVEMENT TO DISTINGUISH CLICK FROM DRAG/ROTATE
+    let pointerDownPos = { x: 0, y: 0 };
+    let hasDragged = false;
+    const DRAG_THRESHOLD = 5; // pixlar — under detta räknas det som ett klick
+
+    function handlePointerDown(event) {
+      pointerDownPos = { x: event.clientX, y: event.clientY };
+      hasDragged = false;
+    }
+
+    function handlePointerMove(event) {
+      const dx = event.clientX - pointerDownPos.x;
+      const dy = event.clientY - pointerDownPos.y;
+      if (Math.sqrt(dx * dx + dy * dy) > DRAG_THRESHOLD) {
+        hasDragged = true;
+      }
+    }
+
+    function handlePointerUp(event) {
+      if (hasDragged) return; // användaren snurrade — ingen reset
+
+      const model = modelRef.current;
+      if (!model) return;
+
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(pointer, camera);
+
+      const intersects = raycaster.intersectObject(model, true);
+
+      if (intersects.length > 0) {
+        camera.position.copy(defaultCameraPosition);
+        controls.target.copy(defaultTarget);
+        model.rotation.y = 0;
+        controls.update();
+      }
+    }
+
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointermove", handlePointerMove);
+    canvas.addEventListener("pointerup", handlePointerUp);
+
     // RESIZE
     function handleResize() {
       const width = canvas.clientWidth;
@@ -128,6 +180,9 @@ function ThreeScene({
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerup", handlePointerUp);
 
       controls.dispose();
       renderer.dispose();
