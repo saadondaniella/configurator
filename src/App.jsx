@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StoryPanel from "./component/StoryPanel";
 import ThreeScene from "./component/ThreeScene";
 import "./App.css";
 
 function App() {
+  const [modelReady, setModelReady] = useState(false);
+  const [introLayoutReady, setIntroLayoutReady] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
   const [mood, setMood] = useState(null);
   const [form, setForm] = useState(null);
   const [color, setColor] = useState(null);
@@ -12,6 +15,23 @@ function App() {
   const [previewColor, setPreviewColor] = useState(null);
   const [previewSize, setPreviewSize] = useState(null);
   const [resetKey, setResetKey] = useState(0);
+
+  useEffect(() => {
+    if (!modelReady) return undefined;
+
+    const layoutTimer = window.setTimeout(() => {
+      setIntroLayoutReady(true);
+    }, 300);
+
+    const contentTimer = window.setTimeout(() => {
+      setIntroComplete(true);
+    }, 2750);
+
+    return () => {
+      window.clearTimeout(layoutTimer);
+      window.clearTimeout(contentTimer);
+    };
+  }, [modelReady]);
 
   function handleReset() {
     setMood(null);
@@ -25,7 +45,11 @@ function App() {
   }
 
   return (
-    <main className="app">
+    <main
+      className={`app ${introLayoutReady ? "intro-layout-ready" : ""} ${
+        introComplete ? "intro-complete" : ""
+      }`}
+    >
       <button
         className="app-logo-button"
         type="button"
@@ -51,6 +75,7 @@ function App() {
       />
 
       <ThreeScene
+        onModelReady={() => setModelReady(true)}
         mood={mood}
         form={form}
         color={color}

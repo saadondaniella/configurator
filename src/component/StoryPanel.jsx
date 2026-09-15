@@ -65,19 +65,21 @@ function StoryPanel({
 
   return (
     <section className="story-panel">
-      <p className="story-line">Every story is worth telling.</p>
+      <p className="story-line story-reveal story-reveal-1">
+        Every story is worth telling.
+      </p>
 
-      <p className="story-line">
+      <p className="story-line story-reveal story-reveal-2">
         This particular one began with me needing change. Not really feeling
         like
       </p>
 
-      <p className="story-line">
+      <p className="story-line story-reveal story-reveal-3">
         myselfe lately, I was on the lookout for meds and stumbled upon treat™.
       </p>
 
       {/* MOOD */}
-      <div className="story-block">
+      <div className="story-block story-reveal story-reveal-4">
         <div className="story-line">
           <span>I wanted to</span>
 
@@ -176,13 +178,12 @@ function StoryPanel({
 
       {/* COLOR */}
       {form && (
-        <div className="story-block fade-in">
+        <div className="color-selection fade-in">
           <div className="story-line">
             <span>
               The pill was almost complete, I just had to choose a beautiful
               color and went for
-            </span>
-
+            </span>{" "}
             <div className="color-choice">
               {!showColorOptions && (
                 <button

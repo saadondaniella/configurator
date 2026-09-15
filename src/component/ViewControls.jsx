@@ -1,6 +1,12 @@
-function ViewControls({ onViewChange }) {
+function ViewControls({ onViewChange, backgroundColor }) {
   return (
-    <div className="view-controls">
+    <div
+      className={`view-controls ${
+        backgroundColor === "blue" || backgroundColor === "beige"
+          ? "view-controls-dark"
+          : ""
+      }`}
+    >
       <button
         className="view-control view-control-1"
         onClick={() => onViewChange(1)}

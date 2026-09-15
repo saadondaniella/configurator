@@ -5,6 +5,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import ViewControls from "./ViewControls";
 
 function ThreeScene({
+  onModelReady,
   mood,
   form,
   color,
@@ -164,11 +165,13 @@ function ThreeScene({
     canvas.addEventListener("pointerup", handlePointerUp);
 
     // RESIZE
-    function handleResize() {
+    function handleResize(updateCamera = true) {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
 
       renderer.setSize(width, height, false);
+
+      if (!updateCamera) return;
 
       const newAspect = width / height;
       camera.left = (-frustumSize * newAspect) / 2;
@@ -180,6 +183,8 @@ function ThreeScene({
 
     handleResize();
 
+    const resizeObserver = new ResizeObserver(() => handleResize(false));
+    resizeObserver.observe(canvas);
     window.addEventListener("resize", handleResize);
 
     // ANIMATION LOOP
@@ -197,6 +202,7 @@ function ThreeScene({
     // CLEANUP
     return () => {
       cancelAnimationFrame(animationFrameId);
+      resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
       canvas.removeEventListener("pointerdown", handlePointerDown);
       canvas.removeEventListener("pointermove", handlePointerMove);
@@ -282,6 +288,7 @@ function ThreeScene({
 
         // SAVE THE GROUP IN THE REF
         modelRef.current = modelGroup;
+        onModelReady();
 
         console.log("Loaded form:", activeForm);
         console.log("Loaded color:", activeColor);
@@ -293,6 +300,7 @@ function ThreeScene({
 
       (error) => {
         console.error("Error loading GLB:", error);
+        onModelReady();
       },
     );
   }, [form, color, size, previewForm, previewColor, previewSize]);
@@ -306,7 +314,10 @@ function ThreeScene({
     >
       <canvas ref={canvasRef}></canvas>
 
-      <ViewControls onViewChange={handleViewChange} />
+      <ViewControls
+        onViewChange={handleViewChange}
+        backgroundColor={backgroundColor}
+      />
 
       {mood && (
         <div

@@ -26,6 +26,18 @@ body,
   background: transparent;
   cursor: pointer;
   z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.intro-complete .app-logo-button {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .app-logo {
@@ -35,9 +47,10 @@ body,
 }
 
 .story-panel {
-  width: 40%;
+  width: 35%;
+  flex: 0 0 35%;
   height: 100vh;
-  padding: 30vh 40px 40px 60px;
+  padding: 30vh 20px 40px 50px;
   font-size: 12px;
   display: flex;
   flex-direction: column;
@@ -46,6 +59,25 @@ body,
   font-weight: 350;
   line-height: 14px;
   color: #1d1d1d;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-12px);
+  transition:
+    width 2.2s ease,
+    flex-basis 2.2s ease,
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.intro-layout-ready .story-panel {
+  width: 35%;
+  flex-basis: 35%;
+}
+
+.intro-complete .story-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
 }
 
 .story-line {
@@ -76,6 +108,11 @@ body,
 .size-selection {
   display: block;
   line-height: 25px;
+}
+
+.color-selection {
+  width: calc(100% + 5vw);
+  max-width: none;
 }
 
 .mood-choice,
@@ -166,7 +203,31 @@ body,
 /* FADE IN */
 
 .fade-in {
-  animation: fadeIn 0.7s ease forwards;
+  animation: fadeIn 1s ease forwards;
+}
+
+.story-reveal {
+  opacity: 0;
+}
+
+.intro-complete .story-reveal {
+  animation: fadeIn 1s ease both;
+}
+
+.intro-complete .story-reveal-1 {
+  animation-delay: 1s;
+}
+
+.intro-complete .story-reveal-2 {
+  animation-delay: 2.1s;
+}
+
+.intro-complete .story-reveal-3 {
+  animation-delay: 3.2s;
+}
+
+.intro-complete .story-reveal-4 {
+  animation-delay: 4.3s;
 }
 
 @keyframes fadeIn {
@@ -184,18 +245,28 @@ body,
 /* THREE.JS */
 
 .three-scene {
-  width: 60%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
   height: 100vh;
+  overflow: hidden;
+  clip-path: inset(0 0 0 0);
+  z-index: 1;
+  pointer-events: auto;
 
-  position: relative;
-
-  background-color: #d9d5cc;
+  background-color: #000000;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 
   display: flex;
   flex-direction: column;
+  transition: clip-path 2.2s ease;
+}
+
+.intro-layout-ready .three-scene {
+  clip-path: inset(0 0 0 40%);
 }
 
 .three-scene canvas {
@@ -203,6 +274,13 @@ body,
   height: 100%;
 
   display: block;
+  touch-action: none;
+  transform: translateX(0);
+  transition: transform 2.2s ease;
+}
+
+.intro-layout-ready .three-scene canvas {
+  transform: translateX(20vw);
 }
 
 /* PRODUCT INFORMATION */
@@ -224,6 +302,10 @@ body,
   color: white;
 }
 
+.intro-layout-ready .product-info {
+  left: calc(40% + 16px);
+}
+
 .product-info p {
   margin: 0;
 }
@@ -239,6 +321,16 @@ body,
   inset: 0;
 
   pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease;
+}
+
+.intro-complete .view-controls {
+  opacity: 1;
+  visibility: visible;
 }
 
 .view-control {
@@ -255,6 +347,10 @@ body,
   pointer-events: auto;
 }
 
+.view-controls-dark .view-control {
+  color: black;
+}
+
 .view-control-1 {
   left: 16px;
   top: 50%;
@@ -262,11 +358,19 @@ body,
   transform: translateY(-50%);
 }
 
+.intro-layout-ready .view-control-1 {
+  left: calc(40% + 16px);
+}
+
 .view-control-2 {
   top: 16px;
   left: 50%;
 
   transform: translateX(-50%);
+}
+
+.intro-layout-ready .view-control-2 {
+  left: 70%;
 }
 
 .view-control-3 {
@@ -292,14 +396,28 @@ body,
 
   .story-panel {
     width: 100%;
+    flex-basis: 100%;
     height: auto;
     min-height: 48vh;
     padding: 48px 20px 28px;
     gap: 14px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+  }
+
+  .intro-layout-ready .story-panel {
+    width: 100%;
+    flex-basis: 100%;
   }
 
   .story-panel > * {
     max-width: 100%;
+  }
+
+  .color-selection {
+    width: 100%;
   }
 
   .mood-choice,
@@ -316,8 +434,43 @@ body,
 
   .three-scene {
     width: 100%;
+    position: relative;
+    top: auto;
+    right: auto;
+    clip-path: none;
     height: 70vh;
     min-height: 420px;
+    transition: none;
+  }
+
+  .intro-layout-ready .three-scene {
+    width: 100%;
+    right: auto;
+  }
+
+  .three-scene canvas,
+  .intro-layout-ready .three-scene canvas {
+    transform: none;
+    transition: none;
+  }
+
+  .intro-layout-ready .product-info,
+  .intro-layout-ready .view-control-1,
+  .intro-layout-ready .view-control-2 {
+    left: auto;
+  }
+
+  .app-logo-button {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+  }
+
+  .view-controls {
+    opacity: 1;
+    visibility: visible;
+    transition: none;
   }
 
   .product-info {
