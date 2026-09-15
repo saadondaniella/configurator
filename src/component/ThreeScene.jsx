@@ -4,7 +4,14 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import ViewControls from "./ViewControls";
 
-function ThreeScene({ form, color, size, previewForm, previewColor }) {
+function ThreeScene({
+  form,
+  color,
+  size,
+  previewForm,
+  previewColor,
+  previewSize,
+}) {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
@@ -153,9 +160,11 @@ function ThreeScene({ form, color, size, previewForm, previewColor }) {
 
     let modelPath;
 
-    // SIZE SELECTED → SHOW BLISTER
-    if (form && color && size) {
-      modelPath = `/glb/${formNames[form]}_Pill_${size}_${colorNames[color]}.glb`;
+    const activeSize = previewSize || size;
+
+    // SIZE SELECTED OR HOVERED → SHOW BLISTER
+    if (form && color && activeSize && !previewForm && !previewColor) {
+      modelPath = `/glb/${formNames[form]}_Pill_${activeSize}_${colorNames[color]}.glb`;
     }
 
     // NO SIZE → SHOW INDIVIDUAL PILL
@@ -201,7 +210,7 @@ function ThreeScene({ form, color, size, previewForm, previewColor }) {
 
         console.log("Loaded form:", activeForm);
         console.log("Loaded color:", activeColor);
-        console.log("Loaded size:", size);
+        console.log("Loaded size:", activeSize);
         console.log("Loaded model:", modelPath);
       },
 
@@ -211,7 +220,7 @@ function ThreeScene({ form, color, size, previewForm, previewColor }) {
         console.error("Error loading GLB:", error);
       },
     );
-  }, [form, color, size, previewForm, previewColor]);
+  }, [form, color, size, previewForm, previewColor, previewSize]);
 
   return (
     <div

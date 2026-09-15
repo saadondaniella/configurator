@@ -18,15 +18,23 @@ body,
   height: 100vh;
 }
 
-.app-logo {
+.app-logo-button {
   position: absolute;
   top: 16px;
   left: 16px;
 
-  width: 47px;
-  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 
   z-index: 10;
+}
+
+.app-logo {
+  display: block;
+  width: 47px;
+  height: auto;
 }
 
 /* STORY PANEL */
@@ -110,6 +118,14 @@ body,
 .color-options .text-button,
 .size-options .text-button {
   text-decoration: none;
+  opacity: 0.5;
+}
+
+.mood-options .text-button:hover,
+.form-options .text-button:hover,
+.color-options .text-button:hover,
+.size-options .text-button:hover {
+  opacity: 1;
 }
 
 /* TEXT BUTTONS */

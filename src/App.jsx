@@ -10,10 +10,30 @@ function App() {
   const [size, setSize] = useState(null);
   const [previewForm, setPreviewForm] = useState(null);
   const [previewColor, setPreviewColor] = useState(null);
+  const [previewSize, setPreviewSize] = useState(null);
+  const [resetKey, setResetKey] = useState(0);
+
+  function handleReset() {
+    setMood(null);
+    setForm(null);
+    setColor(null);
+    setSize(null);
+    setPreviewForm(null);
+    setPreviewColor(null);
+    setPreviewSize(null);
+    setResetKey((currentKey) => currentKey + 1);
+  }
 
   return (
     <main className="app">
-      <img className="app-logo" src="/logo/treat-logo.png" alt="treat" />
+      <button
+        className="app-logo-button"
+        type="button"
+        aria-label="Start over"
+        onClick={handleReset}
+      >
+        <img className="app-logo" src="/logo/treat-logo.png" alt="treat" />
+      </button>
 
       <StoryPanel
         mood={mood}
@@ -26,6 +46,8 @@ function App() {
         setSize={setSize}
         onFormPreview={setPreviewForm}
         onColorPreview={setPreviewColor}
+        onSizePreview={setPreviewSize}
+        resetKey={resetKey}
       />
 
       <ThreeScene
@@ -34,6 +56,7 @@ function App() {
         size={size}
         previewForm={previewForm}
         previewColor={previewColor}
+        previewSize={previewSize}
       />
     </main>
   );
