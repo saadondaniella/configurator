@@ -10,10 +10,10 @@ function StoryPanel({
   size,
   setSize,
 }) {
-  const [showMoodOptions, setShowMoodOptions] = useState(false);
-  const [showFormOptions, setShowFormOptions] = useState(false);
-  const [showColorOptions, setShowColorOptions] = useState(false);
-  const [showSizeOptions, setShowSizeOptions] = useState(false);
+  const [showMoodOptions, setShowMoodOptions] = useState(true);
+  const [showFormOptions, setShowFormOptions] = useState(true);
+  const [showColorOptions, setShowColorOptions] = useState(true);
+  const [showSizeOptions, setShowSizeOptions] = useState(true);
 
   function handleMoodSelect(selectedMood) {
     setMood(selectedMood);
@@ -55,7 +55,7 @@ function StoryPanel({
               className="text-button"
               onClick={() => setShowMoodOptions(true)}
             >
-              {mood || "Choose"}
+              {mood}
             </button>
           )}
 
@@ -99,7 +99,7 @@ function StoryPanel({
                 className="text-button"
                 onClick={() => setShowFormOptions(true)}
               >
-                {form || "Choose"}
+                {form}
               </button>
             )}
 
@@ -147,7 +147,7 @@ function StoryPanel({
                 className="text-button"
                 onClick={() => setShowColorOptions(true)}
               >
-                {color || "Choose"}
+                {color}
               </button>
             )}
 
@@ -190,7 +190,7 @@ function StoryPanel({
                 className="text-button"
                 onClick={() => setShowSizeOptions(true)}
               >
-                {size || "Choose"}
+                {size}
               </button>
             )}
 

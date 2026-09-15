@@ -11,6 +11,8 @@ function App() {
 
   return (
     <main className="app">
+      <img className="app-logo" src="/logo/treat-logo.png" alt="treat" />
+
       <StoryPanel
         mood={mood}
         setMood={setMood}
