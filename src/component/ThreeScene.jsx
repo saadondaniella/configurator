@@ -24,9 +24,10 @@ function ThreeScene({
 
   const backgroundImage = backgroundImages[color];
 
-  // Default-view — used at start and when user clicks the model
-  const defaultCameraPosition = new THREE.Vector3(0, 1.3, 1.0);
+  // Default-view (isometric) — used at start and when user clicks the model
+  const defaultCameraPosition = new THREE.Vector3(3, 3, 3);
   const defaultTarget = new THREE.Vector3(0, 0, 0);
+  const DEFAULT_MODEL_ROTATION = Math.PI; // 180° — vänder modellen så loggan är fram
 
   // RAYCASTER to detect click on the model
   const raycaster = new THREE.Raycaster();
@@ -54,15 +55,20 @@ function ThreeScene({
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // CAMERA
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      canvas.clientWidth / canvas.clientHeight,
+    // CAMERA — orthographic for isometric look
+    const aspect = canvas.clientWidth / canvas.clientHeight;
+    const frustumSize = 2.5; // styr "zoom" — lägre = mer inzoomat
+
+    const camera = new THREE.OrthographicCamera(
+      (-frustumSize * aspect) / 2,
+      (frustumSize * aspect) / 2,
+      frustumSize / 2,
+      -frustumSize / 2,
       0.1,
       1000,
     );
 
-    camera.position.set(0, 1.3, 1.0);
+    camera.position.copy(defaultCameraPosition);
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
@@ -140,7 +146,7 @@ function ThreeScene({
       if (intersects.length > 0) {
         camera.position.copy(defaultCameraPosition);
         controls.target.copy(defaultTarget);
-        model.rotation.y = 0;
+        model.rotation.y = DEFAULT_MODEL_ROTATION;
         controls.update();
       }
     }
@@ -156,7 +162,11 @@ function ThreeScene({
 
       renderer.setSize(width, height, false);
 
-      camera.aspect = width / height;
+      const newAspect = width / height;
+      camera.left = (-frustumSize * newAspect) / 2;
+      camera.right = (frustumSize * newAspect) / 2;
+      camera.top = frustumSize / 2;
+      camera.bottom = -frustumSize / 2;
       camera.updateProjectionMatrix();
     }
 
@@ -259,6 +269,7 @@ function ThreeScene({
 
         modelGroup.add(model);
         modelGroup.scale.setScalar(2 / largestDimension);
+        modelGroup.rotation.y = DEFAULT_MODEL_ROTATION;
         scene.add(modelGroup);
 
         // SAVE THE GROUP IN THE REF
