@@ -22,7 +22,8 @@ function ThreeScene({
     beige: "/backgrounds/background-cream.jpg",
   };
 
-  const backgroundImage = backgroundImages[color];
+  const backgroundColor = previewColor || color;
+  const backgroundImage = backgroundImages[backgroundColor];
 
   // Default-view (isometric) — used at start and when user clicks the model
   const defaultCameraPosition = new THREE.Vector3(3, 3, 3);
@@ -300,7 +301,13 @@ function ThreeScene({
 
       <ViewControls onViewChange={handleViewChange} />
 
-      <div className="product-info">
+      <div
+        className={`product-info ${
+          backgroundColor === "blue" || backgroundColor === "beige"
+            ? "product-info-dark"
+            : ""
+        }`}
+      >
         <p>
           DEVELOPER treat™. PRINCIPAL INVESTIGATOR Dr. Clara Wallin. ACTIVE
           SUBSTANCE Amoxytocin acetate 400 mg. PHARMACEUTICAL DEVELOPMENT Treat
