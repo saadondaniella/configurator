@@ -74,7 +74,7 @@ function StoryPanel({
         <div className="mood-choice">
           {!showMoodOptions && (
             <button
-              className="text-button"
+              className="text-button selected-value"
               onClick={() => setShowMoodOptions(true)}
             >
               {mood}
@@ -121,7 +121,7 @@ function StoryPanel({
           <div className="form-choice">
             {!showFormOptions && (
               <button
-                className="text-button"
+                className="text-button selected-value"
                 onClick={() => setShowFormOptions(true)}
               >
                 {formLabels[form]}
@@ -175,7 +175,7 @@ function StoryPanel({
           <div className="color-choice">
             {!showColorOptions && (
               <button
-                className="text-button"
+                className="text-button selected-value"
                 onClick={() => setShowColorOptions(true)}
               >
                 {color}
@@ -227,7 +227,7 @@ function StoryPanel({
           <div className="size-choice">
             {!showSizeOptions && (
               <button
-                className="text-button"
+                className="text-button selected-value"
                 onClick={() => setShowSizeOptions(true)}
               >
                 {size}
