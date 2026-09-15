@@ -9,6 +9,8 @@ function StoryPanel({
   setColor,
   size,
   setSize,
+  onFormPreview,
+  onColorPreview,
 }) {
   const [showMoodOptions, setShowMoodOptions] = useState(true);
   const [showFormOptions, setShowFormOptions] = useState(true);
@@ -27,6 +29,8 @@ function StoryPanel({
 
   function handleColorSelect(selectedColor) {
     setColor(selectedColor);
+    setSize(null);
+    setShowSizeOptions(true);
     setShowColorOptions(false);
   }
 
@@ -108,6 +112,8 @@ function StoryPanel({
                 <button
                   className="text-button"
                   onClick={() => handleFormSelect("round")}
+                  onMouseEnter={() => onFormPreview("round")}
+                  onMouseLeave={() => onFormPreview(null)}
                 >
                   oval
                 </button>
@@ -115,6 +121,8 @@ function StoryPanel({
                 <button
                   className="text-button"
                   onClick={() => handleFormSelect("heart")}
+                  onMouseEnter={() => onFormPreview("heart")}
+                  onMouseLeave={() => onFormPreview(null)}
                 >
                   heart
                 </button>
@@ -122,6 +130,8 @@ function StoryPanel({
                 <button
                   className="text-button"
                   onClick={() => handleFormSelect("capsule")}
+                  onMouseEnter={() => onFormPreview("capsule")}
+                  onMouseLeave={() => onFormPreview(null)}
                 >
                   circle
                 </button>
@@ -156,6 +166,8 @@ function StoryPanel({
                 <button
                   className="text-button"
                   onClick={() => handleColorSelect("red")}
+                  onMouseEnter={() => onColorPreview("red")}
+                  onMouseLeave={() => onColorPreview(null)}
                 >
                   red
                 </button>
@@ -163,6 +175,8 @@ function StoryPanel({
                 <button
                   className="text-button"
                   onClick={() => handleColorSelect("blue")}
+                  onMouseEnter={() => onColorPreview("blue")}
+                  onMouseLeave={() => onColorPreview(null)}
                 >
                   aqua
                 </button>
@@ -170,6 +184,8 @@ function StoryPanel({
                 <button
                   className="text-button"
                   onClick={() => handleColorSelect("beige")}
+                  onMouseEnter={() => onColorPreview("beige")}
+                  onMouseLeave={() => onColorPreview(null)}
                 >
                   cream
                 </button>

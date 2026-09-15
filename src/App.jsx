@@ -8,6 +8,8 @@ function App() {
   const [form, setForm] = useState(null);
   const [color, setColor] = useState(null);
   const [size, setSize] = useState(null);
+  const [previewForm, setPreviewForm] = useState(null);
+  const [previewColor, setPreviewColor] = useState(null);
 
   return (
     <main className="app">
@@ -22,9 +24,17 @@ function App() {
         setColor={setColor}
         size={size}
         setSize={setSize}
+        onFormPreview={setPreviewForm}
+        onColorPreview={setPreviewColor}
       />
 
-      <ThreeScene form={form} color={color} size={size} />
+      <ThreeScene
+        form={form}
+        color={color}
+        size={size}
+        previewForm={previewForm}
+        previewColor={previewColor}
+      />
     </main>
   );
 }

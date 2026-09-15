@@ -4,7 +4,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import ViewControls from "./ViewControls";
 
-function ThreeScene({ form, color, size }) {
+function ThreeScene({ form, color, size, previewForm, previewColor }) {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
@@ -146,9 +146,18 @@ function ThreeScene({ form, color, size }) {
       red: "Red",
     };
 
-    let modelPath = "/glb/Capsule_Pill_Individual_Red.glb";
+    const activeForm = previewForm || form || "capsule";
+    const activeColor = previewColor || color || "red";
+    const isCompleteSelection =
+      form && color && size && !previewForm && !previewColor;
 
-    if (form && color && size) {
+    let modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
+
+    if (activeForm === "heart" && activeColor === "red") {
+      modelPath = "/glb/Heart_Pill_Individual_Red-v1.glb";
+    }
+
+    if (isCompleteSelection) {
       modelPath = `/glb/${formNames[form]}_Pill_${size}_${colorNames[color]}.glb`;
     }
 
@@ -185,8 +194,8 @@ function ThreeScene({ form, color, size }) {
         // SAVE THE GROUP IN THE REF
         modelRef.current = modelGroup;
 
-        console.log("Loaded form:", form);
-        console.log("Loaded color:", color);
+        console.log("Loaded form:", activeForm);
+        console.log("Loaded color:", activeColor);
         console.log("Loaded size:", size);
         console.log("Loaded model:", modelPath);
       },
@@ -197,7 +206,7 @@ function ThreeScene({ form, color, size }) {
         console.error("Error loading GLB:", error);
       },
     );
-  }, [form, color, size]);
+  }, [form, color, size, previewForm, previewColor]);
 
   return (
     <div
