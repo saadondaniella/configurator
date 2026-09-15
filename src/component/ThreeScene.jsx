@@ -25,6 +25,15 @@ function ThreeScene({
   const backgroundColor = previewColor || color;
   const backgroundImage = backgroundImages[backgroundColor];
 
+  // Default-view (isometric) — used at start and when user clicks the model
+  const defaultCameraPosition = new THREE.Vector3(3, 3, 3);
+  const defaultTarget = new THREE.Vector3(0, 0, 0);
+  const DEFAULT_MODEL_ROTATION = Math.PI; // 180° — vänder modellen så loggan är fram
+
+  // RAYCASTER to detect click on the model
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+
   function handleViewChange(view) {
     const model = modelRef.current;
 
@@ -47,15 +56,20 @@ function ThreeScene({
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // CAMERA
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      canvas.clientWidth / canvas.clientHeight,
+    // CAMERA — orthographic for isometric look
+    const aspect = canvas.clientWidth / canvas.clientHeight;
+    const frustumSize = 2.5; // styr "zoom" — lägre = mer inzoomat
+
+    const camera = new THREE.OrthographicCamera(
+      (-frustumSize * aspect) / 2,
+      (frustumSize * aspect) / 2,
+      frustumSize / 2,
+      -frustumSize / 2,
       0.1,
       1000,
     );
 
-    camera.position.set(0, 1.3, 2.2);
+    camera.position.copy(defaultCameraPosition);
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
@@ -96,6 +110,51 @@ function ThreeScene({
     // CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.enableZoom = false;
+
+    // TRACK POINTER MOVEMENT TO DISTINGUISH CLICK FROM DRAG/ROTATE
+    let pointerDownPos = { x: 0, y: 0 };
+    let hasDragged = false;
+    const DRAG_THRESHOLD = 5; // pixlar — under detta räknas det som ett klick
+
+    function handlePointerDown(event) {
+      pointerDownPos = { x: event.clientX, y: event.clientY };
+      hasDragged = false;
+    }
+
+    function handlePointerMove(event) {
+      const dx = event.clientX - pointerDownPos.x;
+      const dy = event.clientY - pointerDownPos.y;
+      if (Math.sqrt(dx * dx + dy * dy) > DRAG_THRESHOLD) {
+        hasDragged = true;
+      }
+    }
+
+    function handlePointerUp(event) {
+      if (hasDragged) return; // användaren snurrade — ingen reset
+
+      const model = modelRef.current;
+      if (!model) return;
+
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(pointer, camera);
+
+      const intersects = raycaster.intersectObject(model, true);
+
+      if (intersects.length > 0) {
+        camera.position.copy(defaultCameraPosition);
+        controls.target.copy(defaultTarget);
+        model.rotation.y = DEFAULT_MODEL_ROTATION;
+        controls.update();
+      }
+    }
+
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointermove", handlePointerMove);
+    canvas.addEventListener("pointerup", handlePointerUp);
 
     // RESIZE
     function handleResize() {
@@ -104,7 +163,11 @@ function ThreeScene({
 
       renderer.setSize(width, height, false);
 
-      camera.aspect = width / height;
+      const newAspect = width / height;
+      camera.left = (-frustumSize * newAspect) / 2;
+      camera.right = (frustumSize * newAspect) / 2;
+      camera.top = frustumSize / 2;
+      camera.bottom = -frustumSize / 2;
       camera.updateProjectionMatrix();
     }
 
@@ -128,6 +191,9 @@ function ThreeScene({
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerup", handlePointerUp);
 
       controls.dispose();
       renderer.dispose();
@@ -204,6 +270,7 @@ function ThreeScene({
 
         modelGroup.add(model);
         modelGroup.scale.setScalar(2 / largestDimension);
+        modelGroup.rotation.y = DEFAULT_MODEL_ROTATION;
         scene.add(modelGroup);
 
         // SAVE THE GROUP IN THE REF
