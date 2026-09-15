@@ -51,6 +51,7 @@ function App() {
       />
 
       <ThreeScene
+        mood={mood}
         form={form}
         color={color}
         size={size}
