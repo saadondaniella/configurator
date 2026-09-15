@@ -234,6 +234,10 @@ body,
   margin: 0;
 }
 
+.product-info-dark {
+  color: black;
+}
+
 /* VIEW CONTROLS */
 
 .view-controls {
