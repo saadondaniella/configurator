@@ -131,7 +131,7 @@ function ThreeScene({ form, color, size }) {
       red: "Red",
     };
 
-    let modelPath = "/glb/Heart_Pill_Standalone.glb";
+    let modelPath = "/glb/Capsule_Pill_Individual_Red.glb";
 
     if (form && color && size) {
       modelPath = `/glb/${formNames[form]}_Pill_${size}_${colorNames[color]}.glb`;
