@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./StoryPanel.css";
 
 function StoryPanel({
   mood,
@@ -12,6 +13,7 @@ function StoryPanel({
   onFormPreview,
   onColorPreview,
   onSizePreview,
+  onAddToCart,
   resetKey,
 }) {
   const formLabels = {
@@ -293,10 +295,7 @@ function StoryPanel({
         <div className="final-selection fade-in">
           <span>Finally, I</span>
 
-          <button
-            className="cart-button"
-            onClick={() => console.log("Add to bag clicked")}
-          >
+          <button className="cart-button" onClick={onAddToCart}>
             added it to my bag
           </button>
         </div>

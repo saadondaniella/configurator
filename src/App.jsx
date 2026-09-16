@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AddToCartPopup from "./component/AddToCartPopup";
 import StoryPanel from "./component/StoryPanel";
 import ThreeScene from "./component/ThreeScene";
 import "./App.css";
@@ -15,6 +16,7 @@ function App() {
   const [previewColor, setPreviewColor] = useState(null);
   const [previewSize, setPreviewSize] = useState(null);
   const [resetKey, setResetKey] = useState(0);
+  const [isCartPopupOpen, setIsCartPopupOpen] = useState(false);
 
   useEffect(() => {
     if (!modelReady) return undefined;
@@ -41,6 +43,7 @@ function App() {
     setPreviewForm(null);
     setPreviewColor(null);
     setPreviewSize(null);
+    setIsCartPopupOpen(false);
     setResetKey((currentKey) => currentKey + 1);
   }
 
@@ -71,7 +74,16 @@ function App() {
         onFormPreview={setPreviewForm}
         onColorPreview={setPreviewColor}
         onSizePreview={setPreviewSize}
+        onAddToCart={() => setIsCartPopupOpen(true)}
         resetKey={resetKey}
+      />
+
+      <AddToCartPopup
+        mood={mood}
+        form={form}
+        color={color}
+        size={size}
+        isOpen={isCartPopupOpen}
       />
 
       <ThreeScene
