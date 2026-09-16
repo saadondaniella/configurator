@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import ViewControls from "./ViewControls";
 
 function ThreeScene({
@@ -27,7 +28,7 @@ function ThreeScene({
   // Default-view (isometric) — used at start and when user clicks the model
   const defaultCameraPosition = new THREE.Vector3(3, 3, 3);
   const defaultTarget = new THREE.Vector3(0, 0, 0);
-  const DEFAULT_MODEL_ROTATION = Math.PI; // 180° — vänder modellen så loggan är fram
+  const DEFAULT_MODEL_ROTATION = Math.PI; // 180° — turns the model so the logo faces forward
 
   // RAYCASTER to detect click on the model
   const raycaster = new THREE.Raycaster();
@@ -57,7 +58,7 @@ function ThreeScene({
 
     // CAMERA — orthographic for isometric look
     const aspect = canvas.clientWidth / canvas.clientHeight;
-    const frustumSize = 2.5; // styr "zoom" — lägre = mer inzoomat
+    const frustumSize = 2.5; // controls "zoom" — lower = more zoomed in
 
     const camera = new THREE.OrthographicCamera(
       (-frustumSize * aspect) / 2,
@@ -72,27 +73,27 @@ function ThreeScene({
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
-    // Ambient + hemisphere
+    // With an env map, much less direct light is needed — the IBL already
+    // provides ambient illumination and reflections. Fewer, asymmetric
+    // lights also give shape and depth instead of flattening everything out.
 
-    const LIGHT_INTENSITY = 1.4;
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
     scene.add(ambientLight);
 
-    const lightPositions = [
-      [5, 1, 1],
-      [-5, 1, -1],
-      [1, 5, 1],
-      [1, -5, -1],
-      [1, 1, 5],
-      [-1, 1, -5],
-    ];
+    // KEY LIGHT — strongest, defines the main direction
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.35);
+    keyLight.position.set(5, 5, 5);
+    scene.add(keyLight);
 
-    lightPositions.forEach(([x, y, z]) => {
-      const light = new THREE.DirectionalLight(0xffffff, LIGHT_INTENSITY);
-      light.position.set(x, y, z);
-      scene.add(light);
-    });
+    // FILL LIGHT — weaker, softens the shadows from the key light
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.25);
+    fillLight.position.set(-5, 2, -3);
+    scene.add(fillLight);
+
+    // RIM LIGHT — weak, from behind, creates edge light/separation from the background
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.2);
+    rimLight.position.set(0, 3, -5);
+    scene.add(rimLight);
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer({
@@ -103,8 +104,18 @@ function ThreeScene({
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.85;
+    renderer.toneMappingExposure = 0.5;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    // ENVIRONMENT MAP
+    // PMREMGenerator "bakes" a scene into a pre-filtered environment map
+    // (mipmaps for different roughness levels) that PBR materials can use for
+    // reflections and ambient lighting. RoomEnvironment gives a neutral,
+    // studio-like light without needing our own HDRI file.
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const envMap = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environment = envMap;
+    pmrem.dispose(); // the generator (the tool) is no longer needed — but the envMap texture it produced lives on
 
     // CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -114,7 +125,7 @@ function ThreeScene({
     // TRACK POINTER MOVEMENT TO DISTINGUISH CLICK FROM DRAG/ROTATE
     let pointerDownPos = { x: 0, y: 0 };
     let hasDragged = false;
-    const DRAG_THRESHOLD = 5; // pixlar — under detta räknas det som ett klick
+    const DRAG_THRESHOLD = 5; // pixels — below this counts as a click
 
     function handlePointerDown(event) {
       pointerDownPos = { x: event.clientX, y: event.clientY };
@@ -130,7 +141,7 @@ function ThreeScene({
     }
 
     function handlePointerUp(event) {
-      if (hasDragged) return; // användaren snurrade — ingen reset
+      if (hasDragged) return; // user was dragging/rotating — no reset
 
       const model = modelRef.current;
       if (!model) return;
@@ -200,6 +211,7 @@ function ThreeScene({
       canvas.removeEventListener("pointerup", handlePointerUp);
 
       controls.dispose();
+      envMap.dispose(); // frees the GPU memory used by the PMREM texture
       renderer.dispose();
     };
   }, []);
@@ -255,6 +267,22 @@ function ThreeScene({
         }
 
         const model = gltf.scene;
+
+        // Dampen the env map reflection per material — otherwise bright/glossy
+        // surfaces can become overexposed regardless of how weak the DirectionalLights are.
+        model.traverse((child) => {
+          if (child.isMesh && child.material) {
+            const materials = Array.isArray(child.material)
+              ? child.material
+              : [child.material];
+
+            materials.forEach((mat) => {
+              if ("envMapIntensity" in mat) {
+                mat.envMapIntensity = 0.4;
+              }
+            });
+          }
+        });
 
         // FIND CENTER OF MODEL
         const box = new THREE.Box3().setFromObject(model);
