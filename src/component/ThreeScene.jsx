@@ -25,9 +25,9 @@ function ThreeScene({
   };
 
   const substanceNames = {
-    "wind down": "Levofelicin hydrochloride",
-    "get frisky": "Serenexin mesylate",
-    "be all smiles": "Amoxytocin acetate",
+    "wind down": "Serenexin mesylate",
+    "get frisky": "Amoxytocin acetate",
+    "be all smiles": "Levofelicin hydrochloride",
   };
 
   const backgroundColor = previewColor || color;
