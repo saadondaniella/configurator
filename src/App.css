@@ -95,6 +95,7 @@ body,
   left: 16px;
 
   font-size: 8px;
+  line-height: 14px;
 
   display: flex;
   align-items: center;
@@ -239,6 +240,7 @@ body,
     bottom: 12px;
     left: 12px;
     font-size: 6px;
+    line-height: 14px;
   }
 
   .view-control-1 {

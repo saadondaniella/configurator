@@ -253,10 +253,6 @@ function ThreeScene({
     // NO SIZE → SHOW INDIVIDUAL PILL
     else {
       modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
-
-      if (activeForm === "heart" && activeColor === "red") {
-        modelPath = "/glb/Heart_Pill_Individual_Red-v1.glb";
-      }
     }
     loader.load(
       modelPath,
