@@ -77,7 +77,7 @@ function StoryPanel({
       </p>
 
       <p className="story-line story-reveal story-reveal-3">
-        myselfe lately, I was on the lookout for meds and stumbled upon treat™.
+        myself lately, I was on the lookout for meds and stumbled upon treat™.
       </p>
 
       {/* MOOD */}

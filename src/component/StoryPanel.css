@@ -1,6 +1,6 @@
 .story-panel {
   width: 40%;
-  flex: 0 0 35%;
+  flex: 0 0 40%;
   height: 100vh;
   padding: 30vh 30px 30px 60px;
   font-size: 12px;
@@ -194,6 +194,7 @@
     min-height: 48vh;
     padding: 48px 20px 28px;
     gap: 14px;
+    justify-content: flex-start;
     opacity: 1;
     visibility: visible;
     transform: none;
@@ -223,5 +224,11 @@
   .final-selection {
     flex-wrap: wrap;
     gap: 4px;
+  }
+}
+
+@media (min-width: 1501px) {
+  .story-panel {
+    font-size: 14px;
   }
 }
