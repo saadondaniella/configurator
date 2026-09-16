@@ -112,10 +112,6 @@ body,
   margin: 0;
 }
 
-.product-info-dark {
-  color: black;
-}
-
 /* VIEW CONTROLS */
 
 .view-controls {
@@ -152,10 +148,6 @@ body,
 
   pointer-events: auto;
   z-index: 1;
-}
-
-.view-controls-dark .view-control {
-  color: black;
 }
 
 .view-control-1 {

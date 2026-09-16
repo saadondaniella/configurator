@@ -18,20 +18,11 @@ function ThreeScene({
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
 
-  const backgroundImages = {
-    red: "/backgrounds/background-red.jpg",
-    blue: "/backgrounds/background-aqua.jpg",
-    beige: "/backgrounds/background-cream.jpg",
-  };
-
   const substanceNames = {
     "wind down": "Serenexin mesylate",
     "get frisky": "Amoxytocin acetate",
     "be all smiles": "Levofelicin hydrochloride",
   };
-
-  const backgroundColor = previewColor || color;
-  const backgroundImage = backgroundImages[backgroundColor];
 
   // Default-view (isometric) — used at start and when user clicks the model
   const defaultCameraPosition = new THREE.Vector3(3, 3, 3);
@@ -306,27 +297,13 @@ function ThreeScene({
   }, [form, color, size, previewForm, previewColor, previewSize]);
 
   return (
-    <div
-      className="three-scene"
-      style={{
-        backgroundImage: backgroundImage ? `url("${backgroundImage}")` : "none",
-      }}
-    >
+    <div className="three-scene">
       <canvas ref={canvasRef}></canvas>
 
-      <ViewControls
-        onViewChange={handleViewChange}
-        backgroundColor={backgroundColor}
-      />
+      <ViewControls onViewChange={handleViewChange} />
 
       {mood && (
-        <div
-          className={`product-info ${
-            backgroundColor === "blue" || backgroundColor === "beige"
-              ? "product-info-dark"
-              : ""
-          }`}
-        >
+        <div className="product-info">
           <p>
             DEVELOPER treat™. PRINCIPAL INVESTIGATOR Dr. Clara Wallin. ACTIVE
             SUBSTANCE {substanceNames[mood]} 400 mg. PHARMACEUTICAL DEVELOPMENT

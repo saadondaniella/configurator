@@ -1,16 +1,10 @@
-function ViewControls({ onViewChange, backgroundColor }) {
+function ViewControls({ onViewChange }) {
   function handleControlPointerDown(event) {
     event.stopPropagation();
   }
 
   return (
-    <div
-      className={`view-controls ${
-        backgroundColor === "blue" || backgroundColor === "beige"
-          ? "view-controls-dark"
-          : ""
-      }`}
-    >
+    <div className="view-controls">
       <button
         className="view-control view-control-1"
         type="button"
