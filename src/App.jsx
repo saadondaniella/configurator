@@ -17,6 +17,7 @@ function App() {
   const [previewSize, setPreviewSize] = useState(null);
   const [resetKey, setResetKey] = useState(0);
   const [isCartPopupOpen, setIsCartPopupOpen] = useState(false);
+  const [cartOpenRequest, setCartOpenRequest] = useState(0);
 
   useEffect(() => {
     if (!modelReady) return undefined;
@@ -74,7 +75,10 @@ function App() {
         onFormPreview={setPreviewForm}
         onColorPreview={setPreviewColor}
         onSizePreview={setPreviewSize}
-        onAddToCart={() => setIsCartPopupOpen(true)}
+        onAddToCart={() => {
+          setIsCartPopupOpen(true);
+          setCartOpenRequest((request) => request + 1);
+        }}
         resetKey={resetKey}
       />
 
@@ -84,6 +88,7 @@ function App() {
         color={color}
         size={size}
         isOpen={isCartPopupOpen}
+        openRequest={cartOpenRequest}
       />
 
       <ThreeScene

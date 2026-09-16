@@ -185,7 +185,7 @@ function ThreeScene({
 
     handleResize();
 
-    const resizeObserver = new ResizeObserver(() => handleResize(false));
+    const resizeObserver = new ResizeObserver(() => handleResize());
     resizeObserver.observe(canvas);
     window.addEventListener("resize", handleResize);
 

@@ -1,5 +1,5 @@
 import "./AddToCartPopup.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const formLabels = {
   round: "circle",
@@ -13,8 +13,18 @@ const colorLabels = {
   beige: "cream",
 };
 
-function AddToCartPopup({ mood, form, color, size, isOpen }) {
+function AddToCartPopup({ mood, form, color, size, isOpen, openRequest }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  function supportsHover() {
+    return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsCollapsed(false);
+    }
+  }, [isOpen, openRequest]);
 
   const choices = [
     ["Objective", mood],
@@ -29,8 +39,13 @@ function AddToCartPopup({ mood, form, color, size, isOpen }) {
         isCollapsed ? "add-to-cart-popup--collapsed" : ""
       }`}
       aria-label="Your treat choices"
-      onClick={() => setIsCollapsed(true)}
-      onMouseEnter={() => setIsCollapsed(false)}
+      onClick={() => setIsCollapsed((collapsed) => !collapsed)}
+      onMouseEnter={() => {
+        if (supportsHover()) setIsCollapsed(false);
+      }}
+      onMouseLeave={() => {
+        if (supportsHover()) setIsCollapsed(true);
+      }}
     >
       <div className="add-to-cart-popup__content">
         <p className="add-to-cart-popup__title">Treat™</p>

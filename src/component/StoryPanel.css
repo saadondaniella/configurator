@@ -189,10 +189,13 @@
 @media (max-width: 700px) {
   .story-panel {
     width: 100%;
-    flex-basis: 100%;
-    height: auto;
-    min-height: 48vh;
-    padding: 48px 20px 28px;
+    flex: 0 0 50vh;
+    flex-basis: 50vh;
+    height: 50vh;
+    position: relative;
+    z-index: 2;
+    min-height: 50vh;
+    padding: 80px 32px 28px;
     gap: 14px;
     opacity: 1;
     visibility: visible;
@@ -202,7 +205,7 @@
 
   .intro-layout-ready .story-panel {
     width: 100%;
-    flex-basis: 100%;
+    flex-basis: 50vh;
   }
 
   .story-panel > * {

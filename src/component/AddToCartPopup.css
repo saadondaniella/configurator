@@ -96,3 +96,10 @@
 .add-to-cart-popup__button:hover {
   opacity: 0.5;
 }
+
+@media (max-width: 700px) {
+  .add-to-cart-popup {
+    background: #000000;
+    color: #ffffff;
+  }
+}
