@@ -46,8 +46,6 @@ body,
   height: auto;
 }
 
-/* THREE.JS */
-
 .three-scene {
   width: 100%;
   position: absolute;
@@ -68,13 +66,12 @@ body,
 }
 
 .intro-layout-ready .three-scene {
-  clip-path: inset(0 0 0 38%);
+  clip-path: inset(0 0 0 40%);
 }
 
 .three-scene canvas {
   width: 100%;
   height: 100%;
-
   display: block;
   touch-action: none;
   transform: translateX(0);
@@ -85,41 +82,32 @@ body,
   transform: translateX(20vw);
 }
 
-/* PRODUCT INFORMATION */
-
 .product-info {
   position: absolute;
-
   right: 16px;
   bottom: 16px;
   left: 16px;
-
   font-size: 8px;
   line-height: 14px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   text-align: center;
   color: white;
 }
 
 .intro-layout-ready .product-info {
-  left: calc(38% + 16px);
+  left: calc(40% + 16px);
 }
 
 .product-info p {
   margin: 0;
 }
 
-/* VIEW CONTROLS */
-
 .view-controls {
   position: absolute;
   inset: 0;
   z-index: 2;
-
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -135,18 +123,15 @@ body,
 
 .view-control {
   position: absolute;
-
   padding: 0;
   border: 0;
   background: transparent;
-
   font-family: inherit;
   font-size: 12px;
   font-weight: 350;
   line-height: 14px;
   color: white;
   cursor: pointer;
-
   pointer-events: auto;
   z-index: 1;
 }
@@ -159,7 +144,7 @@ body,
 }
 
 .intro-layout-ready .view-control-1 {
-  left: calc(38% + 16px);
+  left: calc(40% + 16px);
 }
 
 .view-control-2 {

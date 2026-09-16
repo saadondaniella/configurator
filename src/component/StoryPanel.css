@@ -1,8 +1,8 @@
 .story-panel {
-  width: 35%;
+  width: 40%;
   flex: 0 0 35%;
   height: 100vh;
-  padding: 30vh 50px 30px 60px;
+  padding: 30vh 30px 30px 60px;
   font-size: 12px;
   display: flex;
   flex-direction: column;
@@ -22,8 +22,8 @@
 }
 
 .intro-layout-ready .story-panel {
-  width: 35%;
-  flex-basis: 35%;
+  width: 40%;
+  flex-basis: 40%;
 }
 
 .intro-complete .story-panel {
@@ -107,8 +107,6 @@
   opacity: 1;
 }
 
-/* TEXT BUTTONS */
-
 .text-button {
   padding: 0;
   border: 0;
@@ -126,8 +124,6 @@
 .text-button:hover {
   opacity: 0.5;
 }
-
-/* FINAL STORY ROW */
 
 .final-selection {
   display: flex;
@@ -149,8 +145,6 @@
 .cart-button:hover {
   opacity: 0.5;
 }
-
-/* FADE IN */
 
 .fade-in {
   animation: fadeIn 1s ease forwards;
