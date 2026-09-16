@@ -4,7 +4,16 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import ViewControls from "./ViewControls";
 
-function ThreeScene({ form, color, size }) {
+function ThreeScene({
+  onModelReady,
+  mood,
+  form,
+  color,
+  size,
+  previewForm,
+  previewColor,
+  previewSize,
+}) {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
@@ -15,7 +24,23 @@ function ThreeScene({ form, color, size }) {
     beige: "/backgrounds/background-cream.jpg",
   };
 
-  const backgroundImage = backgroundImages[color];
+  const substanceNames = {
+    "wind down": "Levofelicin hydrochloride",
+    "get frisky": "Serenexin mesylate",
+    "be all smiles": "Amoxytocin acetate",
+  };
+
+  const backgroundColor = previewColor || color;
+  const backgroundImage = backgroundImages[backgroundColor];
+
+  // Default view — used at start and when user clicks the model
+  const defaultCameraPosition = new THREE.Vector3(0, 1.3, 1.4);
+  const defaultTarget = new THREE.Vector3(0, 0, 0);
+  const DEFAULT_MODEL_ROTATION = 0; // facing straight toward the camera
+
+  // RAYCASTER to detect click on the model
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
 
   function handleViewChange(view) {
     const model = modelRef.current;
@@ -40,18 +65,16 @@ function ThreeScene({ form, color, size }) {
     sceneRef.current = scene;
 
     // CAMERA
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      canvas.clientWidth / canvas.clientHeight,
-      0.1,
-      1000,
-    );
+    const aspect = canvas.clientWidth / canvas.clientHeight;
 
-    camera.position.set(0, 1.3, 2.2);
+    const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+
+    camera.position.copy(defaultCameraPosition);
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
-    // Ambient + hemisphere
+    // Ambient + directional lights from several angles, slightly off-axis,
+    // so no surface gets hit at exactly 90° and overexposes.
 
     const LIGHT_INTENSITY = 1.4;
 
@@ -88,13 +111,60 @@ function ThreeScene({ form, color, size }) {
     // CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.enableZoom = false;
+
+    // TRACK POINTER MOVEMENT TO DISTINGUISH CLICK FROM DRAG/ROTATE
+    let pointerDownPos = { x: 0, y: 0 };
+    let hasDragged = false;
+    const DRAG_THRESHOLD = 5; // pixels — below this counts as a click
+
+    function handlePointerDown(event) {
+      pointerDownPos = { x: event.clientX, y: event.clientY };
+      hasDragged = false;
+    }
+
+    function handlePointerMove(event) {
+      const dx = event.clientX - pointerDownPos.x;
+      const dy = event.clientY - pointerDownPos.y;
+      if (Math.sqrt(dx * dx + dy * dy) > DRAG_THRESHOLD) {
+        hasDragged = true;
+      }
+    }
+
+    function handlePointerUp(event) {
+      if (hasDragged) return; // user was dragging/rotating — no reset
+
+      const model = modelRef.current;
+      if (!model) return;
+
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(pointer, camera);
+
+      const intersects = raycaster.intersectObject(model, true);
+
+      if (intersects.length > 0) {
+        camera.position.copy(defaultCameraPosition);
+        controls.target.copy(defaultTarget);
+        model.rotation.y = DEFAULT_MODEL_ROTATION;
+        controls.update();
+      }
+    }
+
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointermove", handlePointerMove);
+    canvas.addEventListener("pointerup", handlePointerUp);
 
     // RESIZE
-    function handleResize() {
+    function handleResize(updateCamera = true) {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
 
       renderer.setSize(width, height, false);
+
+      if (!updateCamera) return;
 
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -102,6 +172,8 @@ function ThreeScene({ form, color, size }) {
 
     handleResize();
 
+    const resizeObserver = new ResizeObserver(() => handleResize(false));
+    resizeObserver.observe(canvas);
     window.addEventListener("resize", handleResize);
 
     // ANIMATION LOOP
@@ -119,7 +191,11 @@ function ThreeScene({ form, color, size }) {
     // CLEANUP
     return () => {
       cancelAnimationFrame(animationFrameId);
+      resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerup", handlePointerUp);
 
       controls.dispose();
       renderer.dispose();
@@ -146,12 +222,28 @@ function ThreeScene({ form, color, size }) {
       red: "Red",
     };
 
-    let modelPath = "/glb/Capsule_Pill_Individual_Red.glb";
+    const activeForm = previewForm || form || "heart";
 
-    if (form && color && size) {
-      modelPath = `/glb/${formNames[form]}_Pill_${size}_${colorNames[color]}.glb`;
+    // DEFAULT COLOR
+    const activeColor = previewColor || color || "blue";
+
+    let modelPath;
+
+    const activeSize = previewSize || size;
+
+    // SIZE SELECTED OR HOVERED → SHOW BLISTER
+    if (form && color && activeSize && !previewForm && !previewColor) {
+      modelPath = `/glb/${formNames[form]}_Pill_${activeSize}_${colorNames[color]}.glb`;
     }
 
+    // NO SIZE → SHOW INDIVIDUAL PILL
+    else {
+      modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
+
+      if (activeForm === "heart" && activeColor === "red") {
+        modelPath = "/glb/Heart_Pill_Individual_Red-v1.glb";
+      }
+    }
     loader.load(
       modelPath,
       (gltf) => {
@@ -180,14 +272,16 @@ function ThreeScene({ form, color, size }) {
 
         modelGroup.add(model);
         modelGroup.scale.setScalar(2 / largestDimension);
+        modelGroup.rotation.y = DEFAULT_MODEL_ROTATION;
         scene.add(modelGroup);
 
         // SAVE THE GROUP IN THE REF
         modelRef.current = modelGroup;
+        onModelReady();
 
-        console.log("Loaded form:", form);
-        console.log("Loaded color:", color);
-        console.log("Loaded size:", size);
+        console.log("Loaded form:", activeForm);
+        console.log("Loaded color:", activeColor);
+        console.log("Loaded size:", activeSize);
         console.log("Loaded model:", modelPath);
       },
 
@@ -195,9 +289,10 @@ function ThreeScene({ form, color, size }) {
 
       (error) => {
         console.error("Error loading GLB:", error);
+        onModelReady();
       },
     );
-  }, [form, color, size]);
+  }, [form, color, size, previewForm, previewColor, previewSize]);
 
   return (
     <div
@@ -208,26 +303,38 @@ function ThreeScene({ form, color, size }) {
     >
       <canvas ref={canvasRef}></canvas>
 
-      <ViewControls onViewChange={handleViewChange} />
+      <ViewControls
+        onViewChange={handleViewChange}
+        backgroundColor={backgroundColor}
+      />
 
-      <div className="product-info">
-        <p>
-          DEVELOPER treat™. PRINCIPAL INVESTIGATOR Dr. Clara Wallin. ACTIVE
-          SUBSTANCE Amoxytocin acetate 400 mg. PHARMACEUTICAL DEVELOPMENT Treat
-          Sweden AB, Göteborg. CONTRACT MANUFACTURER/PACKAGING Recipharm,
-          Uppsala. DELIVERY MECHANISM Osmotic-controlled release oral delivery
-          system (OROS). CORE Microcrystalline cellulose, colloidal anhydrous
-          silica, magnesium stearate. COATING Aqueous film-coating in warm
-          yellow (iron oxide E172, titanium dioxide E171), polished with
-          purified carnauba wax. GEOMETRY Round, biconvex with beveled edges and
-          central break-score. DEBOSSING »L-25« on upper face, smooth reverse.
-          DIMENSIONS Diameter 8.2 mm, thickness 3.6 mm, net weight 215 mg.
-          BLISTER Aluminium foil with triplex laminate moisture barrier,
-          calendar marking in Karlo Sans 5 pt. CARTON Recycled unbleached liner
-          280 g/m² with tactile Braille. QUANTITY 30 extended-release tablets.
-          PRICE 149 SEK. BATCH SE-88301. VNR 419 820.
-        </p>
-      </div>
+      {mood && (
+        <div
+          className={`product-info ${
+            backgroundColor === "blue" || backgroundColor === "beige"
+              ? "product-info-dark"
+              : ""
+          }`}
+        >
+          <p>
+            DEVELOPER treat™. PRINCIPAL INVESTIGATOR Dr. Clara Wallin. ACTIVE
+            SUBSTANCE {substanceNames[mood]} 400 mg. PHARMACEUTICAL DEVELOPMENT
+            Treat Sweden AB, Göteborg. CONTRACT MANUFACTURER/PACKAGING
+            Recipharm, Uppsala. DELIVERY MECHANISM Osmotic-controlled release
+            oral delivery system (OROS). CORE Microcrystalline cellulose,
+            colloidal anhydrous silica, magnesium stearate. COATING Aqueous
+            film-coating in warm yellow (iron oxide E172, titanium dioxide
+            E171), polished with purified carnauba wax. GEOMETRY Round, biconvex
+            with beveled edges and central break-score. DEBOSSING »L-25« on
+            upper face, smooth reverse. DIMENSIONS Diameter 8.2 mm, thickness
+            3.6 mm, net weight 215 mg. BLISTER Aluminium foil with triplex
+            laminate moisture barrier, calendar marking in Karlo Sans 5 pt.
+            CARTON Recycled unbleached liner 280 g/m² with tactile Braille.
+            QUANTITY 30 extended-release tablets. PRICE 149 SEK. BATCH SE-88301.
+            VNR 419 820.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
