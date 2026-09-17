@@ -3,27 +3,15 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import ProductInfo from "./ProductInfo";
 import ViewControls from "./ViewControls";
-
-// Default-view (isometric) — used at start and when user clicks the model
-const DEFAULT_CAMERA_POSITION = new THREE.Vector3(3, 3, 3);
-const DEFAULT_TARGET = new THREE.Vector3(0, 0, 0);
-const DEFAULT_MODEL_ROTATION = Math.PI; // 180° — turns the model so the logo faces forward
-
-// Fixed camera positions for the [1] [2] [3] buttons. The model itself never
-// rotates — only the camera moves — so a view stays put when the user switches
-// form/color/size and a new GLB is loaded in.
-// After DEFAULT_MODEL_ROTATION the model's front (the embossed logo) faces +X,
-// which puts its two profiles on +Z and -Z.
-// The camera is orthographic, so the distance only has to clear the near/far
-// planes; it does not affect the zoom level.
-const VIEW_DISTANCE = 5;
-
-const CAMERA_VIEWS = {
-  1: new THREE.Vector3(0, 0, -VIEW_DISTANCE), // left-hand side of the object
-  2: new THREE.Vector3(VIEW_DISTANCE, 0, 0), // straight on from the front
-  3: new THREE.Vector3(0, 0, VIEW_DISTANCE), // right-hand side of the object
-};
+import {
+  CAMERA_VIEWS,
+  DEFAULT_CAMERA_POSITION,
+  DEFAULT_MODEL_ROTATION,
+  DEFAULT_TARGET,
+  getModelPath,
+} from "./threeSceneConfig";
 
 function ThreeScene({
   onModelReady,
@@ -43,12 +31,6 @@ function ThreeScene({
   const controlsRef = useRef(null);
   const activeViewRef = useRef(null); // which of the fixed views [1] [2] [3] is selected, null = default
   const latestRequestRef = useRef(0); // tracks the most recent model request
-
-  const substanceNames = {
-    "wind down": "Serenexin mesylate",
-    "get frisky": "Amoxytocin acetate",
-    "be all smiles": "Levofelicin hydrochloride",
-  };
 
   // RAYCASTER to detect click on the model
   const raycaster = new THREE.Raycaster();
@@ -261,36 +243,14 @@ function ThreeScene({
 
     const loader = new GLTFLoader();
 
-    const formNames = {
-      capsule: "Capsule",
-      round: "Round",
-      heart: "Heart",
-    };
-
-    const colorNames = {
-      beige: "Beige",
-      blue: "Blue",
-      red: "Red",
-    };
-
-    const activeForm = previewForm || form || "heart";
-
-    // DEFAULT COLOR
-    const activeColor = previewColor || color || "blue";
-
-    let modelPath;
-
-    const activeSize = previewSize || size;
-
-    // SIZE SELECTED OR HOVERED → SHOW BLISTER
-    if (form && color && activeSize && !previewForm && !previewColor) {
-      modelPath = `/glb/${formNames[form]}_Pill_${activeSize}_${colorNames[color]}.glb`;
-    }
-
-    // NO SIZE → SHOW INDIVIDUAL PILL
-    else {
-      modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
-    }
+    const modelPath = getModelPath({
+      form,
+      color,
+      size,
+      previewForm,
+      previewColor,
+      previewSize,
+    });
 
     // Remove the previous model immediately so old and new GLBs never overlap
     // while the replacement file is loading.
@@ -366,9 +326,6 @@ function ThreeScene({
 
         onModelReady();
 
-        console.log("Loaded form:", activeForm);
-        console.log("Loaded color:", activeColor);
-        console.log("Loaded size:", activeSize);
         console.log("Loaded model:", modelPath);
       },
 
@@ -387,27 +344,7 @@ function ThreeScene({
 
       <ViewControls onViewChange={handleViewChange} />
 
-      {mood && (
-        <div className="product-info">
-          <p>
-            DEVELOPER treat™. PRINCIPAL INVESTIGATOR Dr. Clara Wallin. ACTIVE
-            SUBSTANCE {substanceNames[mood]} 400 mg. PHARMACEUTICAL DEVELOPMENT
-            Treat Sweden AB, Göteborg. CONTRACT MANUFACTURER/PACKAGING
-            Recipharm, Uppsala. DELIVERY MECHANISM Osmotic-controlled release
-            oral delivery system (OROS). CORE Microcrystalline cellulose,
-            colloidal anhydrous silica, magnesium stearate. COATING Aqueous
-            film-coating in warm yellow (iron oxide E172, titanium dioxide
-            E171), polished with purified carnauba wax. GEOMETRY Round, biconvex
-            with beveled edges and central break-score. DEBOSSING »L-25« on
-            upper face, smooth reverse. DIMENSIONS Diameter 8.2 mm, thickness
-            3.6 mm, net weight 215 mg. BLISTER Aluminium foil with triplex
-            laminate moisture barrier, calendar marking in Karlo Sans 5 pt.
-            CARTON Recycled unbleached liner 280 g/m² with tactile Braille.
-            QUANTITY 30 extended-release tablets. PRICE 149 SEK. BATCH SE-88301.
-            VNR 419 820.
-          </p>
-        </div>
-      )}
+      <ProductInfo mood={mood} />
     </div>
   );
 }
