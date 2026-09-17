@@ -5,6 +5,26 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import ViewControls from "./ViewControls";
 
+// Default-view (isometric) — used at start and when user clicks the model
+const DEFAULT_CAMERA_POSITION = new THREE.Vector3(3, 3, 3);
+const DEFAULT_TARGET = new THREE.Vector3(0, 0, 0);
+const DEFAULT_MODEL_ROTATION = Math.PI; // 180° — turns the model so the logo faces forward
+
+// Fixed camera positions for the [1] [2] [3] buttons. The model itself never
+// rotates — only the camera moves — so a view stays put when the user switches
+// form/color/size and a new GLB is loaded in.
+// After DEFAULT_MODEL_ROTATION the model's front (the embossed logo) faces +X,
+// which puts its two profiles on +Z and -Z.
+// The camera is orthographic, so the distance only has to clear the near/far
+// planes; it does not affect the zoom level.
+const VIEW_DISTANCE = 5;
+
+const CAMERA_VIEWS = {
+  1: new THREE.Vector3(0, 0, -VIEW_DISTANCE), // left-hand side of the object
+  2: new THREE.Vector3(VIEW_DISTANCE, 0, 0), // straight on from the front
+  3: new THREE.Vector3(0, 0, VIEW_DISTANCE), // right-hand side of the object
+};
+
 function ThreeScene({
   onModelReady,
   mood,
@@ -18,6 +38,9 @@ function ThreeScene({
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
+  const cameraRef = useRef(null);
+  const controlsRef = useRef(null);
+  const activeViewRef = useRef(null); // which of the fixed views [1] [2] [3] is selected, null = default
   const latestRequestRef = useRef(null); // tracks which model path was most recently requested
 
   const substanceNames = {
@@ -26,27 +49,27 @@ function ThreeScene({
     "be all smiles": "Levofelicin hydrochloride",
   };
 
-  // Default-view (isometric) — used at start and when user clicks the model
-  const defaultCameraPosition = new THREE.Vector3(3, 3, 3);
-  const defaultTarget = new THREE.Vector3(0, 0, 0);
-  const DEFAULT_MODEL_ROTATION = Math.PI; // 180° — turns the model so the logo faces forward
-
   // RAYCASTER to detect click on the model
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
 
+  // Points the camera at one of the fixed views, or back at the default
+  // isometric one when no view is selected. The model rotation is left alone
+  // so the object always keeps the same "front".
+  function applyCameraView(view) {
+    const camera = cameraRef.current;
+    const controls = controlsRef.current;
+
+    if (!camera || !controls) return;
+
+    camera.position.copy(CAMERA_VIEWS[view] || DEFAULT_CAMERA_POSITION);
+    controls.target.copy(DEFAULT_TARGET);
+    controls.update();
+  }
+
   function handleViewChange(view) {
-    const model = modelRef.current;
-
-    if (!model) return;
-
-    const rotations = {
-      1: 0,
-      2: Math.PI / 2,
-      3: -Math.PI / 2,
-    };
-
-    model.rotation.y = rotations[view];
+    activeViewRef.current = view;
+    applyCameraView(view);
   }
 
   // SET UP THREE.JS SCENE
@@ -70,7 +93,9 @@ function ThreeScene({
       1000,
     );
 
-    camera.position.copy(defaultCameraPosition);
+    cameraRef.current = camera;
+
+    camera.position.copy(DEFAULT_CAMERA_POSITION);
     camera.lookAt(0, 0, 0);
 
     // LIGHTS
@@ -122,6 +147,7 @@ function ThreeScene({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enableZoom = false;
+    controlsRef.current = controls;
 
     // TRACK POINTER MOVEMENT TO DISTINGUISH CLICK FROM DRAG/ROTATE
     let pointerDownPos = { x: 0, y: 0 };
@@ -156,8 +182,11 @@ function ThreeScene({
       const intersects = raycaster.intersectObject(model, true);
 
       if (intersects.length > 0) {
-        camera.position.copy(defaultCameraPosition);
-        controls.target.copy(defaultTarget);
+        // Clicking the model drops any selected view and goes back to default
+        activeViewRef.current = null;
+
+        camera.position.copy(DEFAULT_CAMERA_POSITION);
+        controls.target.copy(DEFAULT_TARGET);
         model.rotation.y = DEFAULT_MODEL_ROTATION;
         controls.update();
       }
@@ -315,6 +344,12 @@ function ThreeScene({
 
         // SAVE THE GROUP IN THE REF
         modelRef.current = modelGroup;
+
+        // KEEP THE SELECTED VIEW
+        // A new GLB means a brand new group with the default rotation, so
+        // re-assert the camera view the user picked instead of snapping back.
+        applyCameraView(activeViewRef.current);
+
         onModelReady();
 
         console.log("Loaded form:", activeForm);
