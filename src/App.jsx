@@ -6,6 +6,7 @@ import "./App.css";
 
 function App() {
   const [modelReady, setModelReady] = useState(false);
+  const [introStarted, setIntroStarted] = useState(false);
   const [introLayoutReady, setIntroLayoutReady] = useState(false);
   const [introComplete, setIntroComplete] = useState(false);
   const [mood, setMood] = useState(null);
@@ -20,7 +21,7 @@ function App() {
   const [cartOpenRequest, setCartOpenRequest] = useState(0);
 
   useEffect(() => {
-    if (!modelReady) return undefined;
+    if (!modelReady || !introStarted) return undefined;
 
     const layoutTimer = window.setTimeout(() => {
       setIntroLayoutReady(true);
@@ -34,7 +35,7 @@ function App() {
       window.clearTimeout(layoutTimer);
       window.clearTimeout(contentTimer);
     };
-  }, [modelReady]);
+  }, [modelReady, introStarted]);
 
   function handleReset() {
     setMood(null);
@@ -93,6 +94,7 @@ function App() {
 
       <ThreeScene
         onModelReady={() => setModelReady(true)}
+        onIntroStart={() => setIntroStarted(true)}
         mood={mood}
         form={form}
         color={color}

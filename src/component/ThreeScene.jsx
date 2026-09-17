@@ -1,32 +1,21 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import ProductInfo from "./ProductInfo";
 import ViewControls from "./ViewControls";
-
-// Default-view (isometric) — used at start and when user clicks the model
-const DEFAULT_CAMERA_POSITION = new THREE.Vector3(3, 3, 3);
-const DEFAULT_TARGET = new THREE.Vector3(0, 0, 0);
-const DEFAULT_MODEL_ROTATION = Math.PI; // 180° — turns the model so the logo faces forward
-
-// Fixed camera positions for the [1] [2] [3] buttons. The model itself never
-// rotates — only the camera moves — so a view stays put when the user switches
-// form/color/size and a new GLB is loaded in.
-// After DEFAULT_MODEL_ROTATION the model's front (the embossed logo) faces +X,
-// which puts its two profiles on +Z and -Z.
-// The camera is orthographic, so the distance only has to clear the near/far
-// planes; it does not affect the zoom level.
-const VIEW_DISTANCE = 5;
-
-const CAMERA_VIEWS = {
-  1: new THREE.Vector3(0, 0, -VIEW_DISTANCE), // left-hand side of the object
-  2: new THREE.Vector3(VIEW_DISTANCE, 0, 0), // straight on from the front
-  3: new THREE.Vector3(0, 0, VIEW_DISTANCE), // right-hand side of the object
-};
+import { loadModel, preloadModels } from "./modelLoader";
+import {
+  CAMERA_VIEWS,
+  DEFAULT_CAMERA_POSITION,
+  DEFAULT_MODEL_ROTATION,
+  DEFAULT_TARGET,
+  getModelPath,
+} from "./threeSceneConfig";
 
 function ThreeScene({
   onModelReady,
+  onIntroStart,
   mood,
   form,
   color,
@@ -41,13 +30,7 @@ function ThreeScene({
   const cameraRef = useRef(null);
   const controlsRef = useRef(null);
   const activeViewRef = useRef(null); // which of the fixed views [1] [2] [3] is selected, null = default
-  const latestRequestRef = useRef(null); // tracks which model path was most recently requested
-
-  const substanceNames = {
-    "wind down": "Serenexin mesylate",
-    "get frisky": "Amoxytocin acetate",
-    "be all smiles": "Levofelicin hydrochloride",
-  };
+  const latestRequestRef = useRef(0); // tracks the most recent model request
 
   // RAYCASTER to detect click on the model
   const raycaster = new THREE.Raycaster();
@@ -196,9 +179,14 @@ function ThreeScene({
       }
     }
 
+    function handleCanvasClick() {
+      onIntroStart();
+    }
+
     canvas.addEventListener("pointerdown", handlePointerDown);
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerup", handlePointerUp);
+    canvas.addEventListener("click", handleCanvasClick);
 
     // RESIZE
     function handleResize(updateCamera = true) {
@@ -243,6 +231,7 @@ function ThreeScene({
       canvas.removeEventListener("pointerdown", handlePointerDown);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerup", handlePointerUp);
+      canvas.removeEventListener("click", handleCanvasClick);
 
       controls.dispose();
       envMap.dispose(); // frees the GPU memory used by the PMREM texture
@@ -250,64 +239,60 @@ function ThreeScene({
     };
   }, []);
 
+  // Preload the heavy size models while the user is reading the size options.
+  useEffect(() => {
+    if (!form || !color) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      return;
+    }
+
+    const sizePaths = ["2x3", "2x4", "2x5"].map((previewSize) =>
+      getModelPath({ form, color, size: previewSize }),
+    );
+
+    preloadModels(sizePaths);
+  }, [form, color]);
+
   // LOAD MODEL WHEN FORM, COLOR OR SIZE CHANGES
   useEffect(() => {
     const scene = sceneRef.current;
 
     if (!scene) return;
 
-    const loader = new GLTFLoader();
+    const modelPath = getModelPath({
+      form,
+      color,
+      size,
+      previewForm,
+      previewColor,
+      previewSize,
+    });
 
-    const formNames = {
-      capsule: "Capsule",
-      round: "Round",
-      heart: "Heart",
-    };
-
-    const colorNames = {
-      beige: "Beige",
-      blue: "Blue",
-      red: "Red",
-    };
-
-    const activeForm = previewForm || form || "heart";
-
-    // DEFAULT COLOR
-    const activeColor = previewColor || color || "blue";
-
-    let modelPath;
-
-    const activeSize = previewSize || size;
-
-    // SIZE SELECTED OR HOVERED → SHOW BLISTER
-    if (form && color && activeSize && !previewForm && !previewColor) {
-      modelPath = `/glb/${formNames[form]}_Pill_${activeSize}_${colorNames[color]}.glb`;
+    // Remove the previous model immediately so old and new GLBs never overlap
+    // while the replacement file is loading.
+    if (modelRef.current) {
+      scene.remove(modelRef.current);
+      modelRef.current = null;
     }
 
-    // NO SIZE → SHOW INDIVIDUAL PILL
-    else {
-      modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
-    }
+    // Give every request a unique id. Comparing paths alone is not enough when
+    // the same file is requested again before an earlier request finishes.
+    const requestId = latestRequestRef.current + 1;
+    latestRequestRef.current = requestId;
 
-    // Mark this as the most recently requested model. If a later effect run
-    // fires off a new request before this one's load() callback returns, the
-    // stale callback below will notice it's no longer the latest and bail out.
-    latestRequestRef.current = modelPath;
-
-    loader.load(
-      modelPath,
-      (gltf) => {
+    loadModel(modelPath)
+      .then((loadedScene) => {
         // Ignore this response if a newer request has been made since this
         // one started — otherwise a slow-to-load model could overwrite a
         // model the user has since switched away from.
-        if (latestRequestRef.current !== modelPath) return;
+        if (latestRequestRef.current !== requestId) return;
 
         // REMOVE OLD MODEL
         if (modelRef.current) {
           scene.remove(modelRef.current);
         }
 
-        const model = gltf.scene;
+        const model = loadedScene.clone(true);
 
         // Dampen the env map reflection per material — otherwise bright/glossy
         // surfaces can become overexposed regardless of how weak the DirectionalLights are.
@@ -356,19 +341,12 @@ function ThreeScene({
 
         onModelReady();
 
-        console.log("Loaded form:", activeForm);
-        console.log("Loaded color:", activeColor);
-        console.log("Loaded size:", activeSize);
         console.log("Loaded model:", modelPath);
-      },
-
-      undefined,
-
-      (error) => {
+      })
+      .catch((error) => {
         console.error("Error loading GLB:", error);
         onModelReady();
-      },
-    );
+      });
   }, [form, color, size, previewForm, previewColor, previewSize]);
 
   return (
@@ -377,27 +355,7 @@ function ThreeScene({
 
       <ViewControls onViewChange={handleViewChange} />
 
-      {mood && (
-        <div className="product-info">
-          <p>
-            DEVELOPER treat™. PRINCIPAL INVESTIGATOR Dr. Clara Wallin. ACTIVE
-            SUBSTANCE {substanceNames[mood]} 400 mg. PHARMACEUTICAL DEVELOPMENT
-            Treat Sweden AB, Göteborg. CONTRACT MANUFACTURER/PACKAGING
-            Recipharm, Uppsala. DELIVERY MECHANISM Osmotic-controlled release
-            oral delivery system (OROS). CORE Microcrystalline cellulose,
-            colloidal anhydrous silica, magnesium stearate. COATING Aqueous
-            film-coating in warm yellow (iron oxide E172, titanium dioxide
-            E171), polished with purified carnauba wax. GEOMETRY Round, biconvex
-            with beveled edges and central break-score. DEBOSSING »L-25« on
-            upper face, smooth reverse. DIMENSIONS Diameter 8.2 mm, thickness
-            3.6 mm, net weight 215 mg. BLISTER Aluminium foil with triplex
-            laminate moisture barrier, calendar marking in Karlo Sans 5 pt.
-            CARTON Recycled unbleached liner 280 g/m² with tactile Braille.
-            QUANTITY 30 extended-release tablets. PRICE 149 SEK. BATCH SE-88301.
-            VNR 419 820.
-          </p>
-        </div>
-      )}
+      <ProductInfo mood={mood} />
     </div>
   );
 }
