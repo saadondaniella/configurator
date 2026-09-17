@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import ProductInfo from "./ProductInfo";
 import ViewControls from "./ViewControls";
+import { loadModel, preloadModels } from "./modelLoader";
 import {
   CAMERA_VIEWS,
   DEFAULT_CAMERA_POSITION,
@@ -235,13 +235,25 @@ function ThreeScene({
     };
   }, []);
 
+  // Preload the heavy size models while the user is reading the size options.
+  useEffect(() => {
+    if (!form || !color) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      return;
+    }
+
+    const sizePaths = ["2x3", "2x4", "2x5"].map((previewSize) =>
+      getModelPath({ form, color, size: previewSize }),
+    );
+
+    preloadModels(sizePaths);
+  }, [form, color]);
+
   // LOAD MODEL WHEN FORM, COLOR OR SIZE CHANGES
   useEffect(() => {
     const scene = sceneRef.current;
 
     if (!scene) return;
-
-    const loader = new GLTFLoader();
 
     const modelPath = getModelPath({
       form,
@@ -264,9 +276,8 @@ function ThreeScene({
     const requestId = latestRequestRef.current + 1;
     latestRequestRef.current = requestId;
 
-    loader.load(
-      modelPath,
-      (gltf) => {
+    loadModel(modelPath)
+      .then((loadedScene) => {
         // Ignore this response if a newer request has been made since this
         // one started — otherwise a slow-to-load model could overwrite a
         // model the user has since switched away from.
@@ -277,7 +288,7 @@ function ThreeScene({
           scene.remove(modelRef.current);
         }
 
-        const model = gltf.scene;
+        const model = loadedScene.clone(true);
 
         // Dampen the env map reflection per material — otherwise bright/glossy
         // surfaces can become overexposed regardless of how weak the DirectionalLights are.
@@ -327,15 +338,11 @@ function ThreeScene({
         onModelReady();
 
         console.log("Loaded model:", modelPath);
-      },
-
-      undefined,
-
-      (error) => {
+      })
+      .catch((error) => {
         console.error("Error loading GLB:", error);
         onModelReady();
-      },
-    );
+      });
   }, [form, color, size, previewForm, previewColor, previewSize]);
 
   return (
