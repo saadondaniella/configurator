@@ -7,6 +7,7 @@ import ViewControls from "./ViewControls";
 
 function ThreeScene({
   onModelReady,
+  onIntroStart,
   mood,
   form,
   color,
@@ -162,9 +163,14 @@ function ThreeScene({
       }
     }
 
+    function handleCanvasClick() {
+      onIntroStart();
+    }
+
     canvas.addEventListener("pointerdown", handlePointerDown);
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerup", handlePointerUp);
+    canvas.addEventListener("click", handleCanvasClick);
 
     // RESIZE
     function handleResize(updateCamera = true) {
@@ -209,6 +215,7 @@ function ThreeScene({
       canvas.removeEventListener("pointerdown", handlePointerDown);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerup", handlePointerUp);
+      canvas.removeEventListener("click", handleCanvasClick);
 
       controls.dispose();
       envMap.dispose(); // frees the GPU memory used by the PMREM texture

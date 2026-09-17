@@ -189,14 +189,14 @@
 @media (max-width: 700px) {
   .story-panel {
     width: 100%;
-    flex: 0 0 50vh;
-    flex-basis: 50vh;
-    height: 50vh;
+    flex: 0 0 60vh;
+    flex-basis: 60vh;
+    height: 60vh;
     position: relative;
     z-index: 2;
-    min-height: 50vh;
+    min-height: 60vh;
     padding: 80px 32px 28px;
-    gap: 14px;
+    gap: 20px;
     justify-content: flex-start;
     opacity: 1;
     visibility: visible;
@@ -211,6 +211,10 @@
 
   .story-panel > * {
     max-width: 100%;
+  }
+
+  .story-reveal {
+    opacity: 1;
   }
 
   .color-selection {
