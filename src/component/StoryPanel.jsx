@@ -53,7 +53,6 @@ function StoryPanel({
 
   function handleColorSelect(selectedColor) {
     setColor(selectedColor);
-    setSize(null);
     onColorPreview(null);
     setShowSizeOptions(true);
     setShowColorOptions(false);
