@@ -161,7 +161,6 @@ body,
 .view-control-3 {
   right: 16px;
   top: 50%;
-
   transform: translateY(-50%);
 }
 
@@ -175,24 +174,29 @@ body,
   .app {
     height: auto;
     min-height: 100vh;
-
     flex-direction: column;
   }
 
   .three-scene {
+    order: 2;
     width: 100%;
     position: relative;
+    z-index: 1;
+    overflow: visible;
     top: auto;
     right: auto;
     clip-path: none;
-    height: 70vh;
-    min-height: 420px;
+    flex: 0 0 auto;
+    height: 58vh;
+    min-height: 400px;
+    max-height: 600px;
     transition: none;
   }
 
   .intro-layout-ready .three-scene {
     width: 100%;
     right: auto;
+    clip-path: none;
   }
 
   .three-scene canvas,
@@ -207,6 +211,20 @@ body,
     left: auto;
   }
 
+  .intro-layout-ready .product-info {
+    left: 0;
+  }
+
+  .intro-layout-ready .view-control-2 {
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .intro-layout-ready .view-control-1 {
+    left: 12px;
+  }
+
   .app-logo-button {
     opacity: 1;
     visibility: visible;
@@ -215,17 +233,24 @@ body,
   }
 
   .view-controls {
-    opacity: 1;
-    visibility: visible;
-    transition: none;
+    transition:
+      opacity 0.5s ease,
+      visibility 0.5s ease;
   }
 
   .product-info {
-    right: 12px;
-    bottom: 12px;
-    left: 12px;
-    font-size: 6px;
-    line-height: 14px;
+    top: 100%;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: 100%;
+    min-height: 120px;
+    padding: 0 20px 10px;
+    font-size: 5px;
+    line-height: 12px;
+    justify-content: flex-start;
+    text-align: center;
+    background: #000000;
   }
 
   .view-control-1 {
@@ -234,6 +259,8 @@ body,
 
   .view-control-2 {
     top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .view-control-3 {
