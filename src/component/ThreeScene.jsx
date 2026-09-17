@@ -103,16 +103,16 @@ function ThreeScene({
     // provides ambient illumination and reflections. Fewer, asymmetric
     // lights also give shape and depth instead of flattening everything out.
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.12);
     scene.add(ambientLight);
 
     // KEY LIGHT — strongest, defines the main direction
-    const keyLight = new THREE.DirectionalLight(0xffffff, 0.35);
-    keyLight.position.set(5, 5, 5);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    keyLight.position.set(-4, 5, 6);
     scene.add(keyLight);
 
     // FILL LIGHT — weaker, softens the shadows from the key light
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.25);
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.2);
     fillLight.position.set(-5, 2, -3);
     scene.add(fillLight);
 
@@ -120,6 +120,10 @@ function ThreeScene({
     const rimLight = new THREE.DirectionalLight(0xffffff, 0.2);
     rimLight.position.set(0, 3, -5);
     scene.add(rimLight);
+
+    const rakingLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    rakingLight.position.set(6, 1, 2);
+    scene.add(rakingLight);
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer({
