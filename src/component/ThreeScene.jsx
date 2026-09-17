@@ -124,7 +124,7 @@ function ThreeScene({
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envMap = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     scene.environment = envMap;
-    pmrem.dispose(); // the generator (the tool) is no longer needed — but the envMap texture it produced lives on
+    pmrem.dispose();
 
     // CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -135,7 +135,7 @@ function ThreeScene({
     // TRACK POINTER MOVEMENT TO DISTINGUISH CLICK FROM DRAG/ROTATE
     let pointerDownPos = { x: 0, y: 0 };
     let hasDragged = false;
-    const DRAG_THRESHOLD = 5; // pixels — below this counts as a click
+    const DRAG_THRESHOLD = 5;
 
     function handlePointerDown(event) {
       pointerDownPos = { x: event.clientX, y: event.clientY };
@@ -145,18 +145,20 @@ function ThreeScene({
     function handlePointerMove(event) {
       const dx = event.clientX - pointerDownPos.x;
       const dy = event.clientY - pointerDownPos.y;
+
       if (Math.sqrt(dx * dx + dy * dy) > DRAG_THRESHOLD) {
         hasDragged = true;
       }
     }
 
     function handlePointerUp(event) {
-      if (hasDragged) return; // user was dragging/rotating — no reset
+      if (hasDragged) return;
 
       const model = modelRef.current;
       if (!model) return;
 
       const rect = canvas.getBoundingClientRect();
+
       pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
@@ -194,16 +196,19 @@ function ThreeScene({
       if (!updateCamera) return;
 
       const newAspect = width / height;
+
       camera.left = (-frustumSize * newAspect) / 2;
       camera.right = (frustumSize * newAspect) / 2;
       camera.top = frustumSize / 2;
       camera.bottom = -frustumSize / 2;
+
       camera.updateProjectionMatrix();
     }
 
     handleResize();
 
     const resizeObserver = new ResizeObserver(() => handleResize());
+
     resizeObserver.observe(canvas);
     window.addEventListener("resize", handleResize);
 
@@ -222,15 +227,17 @@ function ThreeScene({
     // CLEANUP
     return () => {
       cancelAnimationFrame(animationFrameId);
+
       resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
+
       canvas.removeEventListener("pointerdown", handlePointerDown);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerup", handlePointerUp);
       canvas.removeEventListener("click", handleCanvasClick);
 
       controls.dispose();
-      envMap.dispose(); // frees the GPU memory used by the PMREM texture
+      envMap.dispose();
       renderer.dispose();
     };
   }, []);
@@ -238,12 +245,17 @@ function ThreeScene({
   // Preload the heavy size models while the user is reading the size options.
   useEffect(() => {
     if (!form || !color) return;
+
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
       return;
     }
 
     const sizePaths = ["2x3", "2x4", "2x5"].map((previewSize) =>
-      getModelPath({ form, color, size: previewSize }),
+      getModelPath({
+        form,
+        color,
+        size: previewSize,
+      }),
     );
 
     preloadModels(sizePaths);
@@ -271,16 +283,13 @@ function ThreeScene({
       modelRef.current = null;
     }
 
-    // Give every request a unique id. Comparing paths alone is not enough when
-    // the same file is requested again before an earlier request finishes.
+    // Give every request a unique id.
     const requestId = latestRequestRef.current + 1;
     latestRequestRef.current = requestId;
 
     loadModel(modelPath)
       .then((loadedScene) => {
-        // Ignore this response if a newer request has been made since this
-        // one started — otherwise a slow-to-load model could overwrite a
-        // model the user has since switched away from.
+        // Ignore this response if a newer request has been made.
         if (latestRequestRef.current !== requestId) return;
 
         // REMOVE OLD MODEL
@@ -290,8 +299,7 @@ function ThreeScene({
 
         const model = loadedScene.clone(true);
 
-        // Dampen the env map reflection per material — otherwise bright/glossy
-        // surfaces can become overexposed regardless of how weak the DirectionalLights are.
+        // Dampen the env map reflection per material.
         model.traverse((child) => {
           if (child.isMesh && child.material) {
             const materials = Array.isArray(child.material)
@@ -310,6 +318,7 @@ function ThreeScene({
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
         const modelSize = box.getSize(new THREE.Vector3());
+
         const largestDimension = Math.max(
           modelSize.x,
           modelSize.y,
@@ -325,15 +334,25 @@ function ThreeScene({
         modelGroup.add(model);
         modelGroup.scale.setScalar(2 / largestDimension);
         modelGroup.rotation.y = DEFAULT_MODEL_ROTATION;
+
         scene.add(modelGroup);
 
         // SAVE THE GROUP IN THE REF
         modelRef.current = modelGroup;
 
-        // KEEP THE SELECTED VIEW
-        // A new GLB means a brand new group with the default rotation, so
-        // re-assert the camera view the user picked instead of snapping back.
-        applyCameraView(activeViewRef.current);
+        const isBlister =
+          !previewForm && !previewColor && (size || previewSize);
+
+        if (activeViewRef.current) {
+          // User selected [1], [2] or [3] → keep that view
+          applyCameraView(activeViewRef.current);
+        } else if (isBlister) {
+          // Blister pack → front view
+          applyCameraView(2);
+        } else {
+          // Individual pill → original default view
+          applyCameraView(null);
+        }
 
         onModelReady();
 
