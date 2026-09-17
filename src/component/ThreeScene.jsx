@@ -18,6 +18,7 @@ function ThreeScene({
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const modelRef = useRef(null);
+  const latestRequestRef = useRef(null); // tracks which model path was most recently requested
 
   const substanceNames = {
     "wind down": "Serenexin mesylate",
@@ -254,9 +255,20 @@ function ThreeScene({
     else {
       modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
     }
+
+    // Mark this as the most recently requested model. If a later effect run
+    // fires off a new request before this one's load() callback returns, the
+    // stale callback below will notice it's no longer the latest and bail out.
+    latestRequestRef.current = modelPath;
+
     loader.load(
       modelPath,
       (gltf) => {
+        // Ignore this response if a newer request has been made since this
+        // one started — otherwise a slow-to-load model could overwrite a
+        // model the user has since switched away from.
+        if (latestRequestRef.current !== modelPath) return;
+
         // REMOVE OLD MODEL
         if (modelRef.current) {
           scene.remove(modelRef.current);
