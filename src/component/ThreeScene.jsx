@@ -42,7 +42,7 @@ function ThreeScene({
   const cameraRef = useRef(null);
   const controlsRef = useRef(null);
   const activeViewRef = useRef(null); // which of the fixed views [1] [2] [3] is selected, null = default
-  const latestRequestRef = useRef(null); // tracks which model path was most recently requested
+  const latestRequestRef = useRef(0); // tracks the most recent model request
 
   const substanceNames = {
     "wind down": "Serenexin mesylate",
@@ -292,10 +292,17 @@ function ThreeScene({
       modelPath = `/glb/${formNames[activeForm]}_Pill_Individual_${colorNames[activeColor]}.glb`;
     }
 
-    // Mark this as the most recently requested model. If a later effect run
-    // fires off a new request before this one's load() callback returns, the
-    // stale callback below will notice it's no longer the latest and bail out.
-    latestRequestRef.current = modelPath;
+    // Remove the previous model immediately so old and new GLBs never overlap
+    // while the replacement file is loading.
+    if (modelRef.current) {
+      scene.remove(modelRef.current);
+      modelRef.current = null;
+    }
+
+    // Give every request a unique id. Comparing paths alone is not enough when
+    // the same file is requested again before an earlier request finishes.
+    const requestId = latestRequestRef.current + 1;
+    latestRequestRef.current = requestId;
 
     loader.load(
       modelPath,
@@ -303,7 +310,7 @@ function ThreeScene({
         // Ignore this response if a newer request has been made since this
         // one started — otherwise a slow-to-load model could overwrite a
         // model the user has since switched away from.
-        if (latestRequestRef.current !== modelPath) return;
+        if (latestRequestRef.current !== requestId) return;
 
         // REMOVE OLD MODEL
         if (modelRef.current) {
